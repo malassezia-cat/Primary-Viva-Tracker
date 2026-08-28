@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Primary Viva Tracker</title>
+
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --card: #ffffff;
+      --text: #202124;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --primary: #34495e;
+      --primary-light: #edf1f5;
+      --good: #2e7d32;
+      --okay: #ef6c00;
+      --weak: #c62828;
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.35rem;
+    }
+
+    header p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 24px 18px 60px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 22px;
+      overflow-x: auto;
+      padding-bottom: 3px;
+    }
+
+    .nav button {
+      border: 0;
+      background: transparent;
+      padding: 10px 14px;
+      border-radius: 10px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .nav button.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .button-primary {
+      border: none;
+      background: var(--primary);
+      color: white;
+      border-radius: 10px;
+      padding: 11px 17px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .button-secondary {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+
+    .button-danger {
+      border: none;
+      background: #fdecec;
+      color: var(--weak);
+      border-radius: 9px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card,
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card {
+      padding: 20px;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-top: 5px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .card {
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 17px;
+      font-size: 1.15rem;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .form-full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.88rem;
+      margin-bottom: 6px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #d8dce2;
+      border-radius: 9px;
+      padding: 11px 12px;
+      font: inherit;
+      background: white;
+      color: var(--text);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid #c8d3df;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 95px;
+      resize: vertical;
+    }
+
+    .rating-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .rating-option input {
+      display: none;
+    }
+
+    .rating-option label {
+      margin: 0;
+      text-align: center;
+      padding: 12px 7px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      background: white;
+    }
+
+    .rating-option input:checked + label {
+      border: 2px solid var(--primary);
+      background: var(--primary-light);
+    }
+
+    .weakness-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .weakness-tag input {
+      display: none;
+    }
+
+    .weakness-tag label {
+      font-weight: 500;
+      margin: 0;
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .weakness-tag input:checked + label {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .viva-list {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .viva-row {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      background: white;
+    }
+
+    .viva-row-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .viva-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .viva-meta {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .rating-badge {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 5px 9px;
+      white-space: nowrap;
+    }
+
+    .rating-good {
+      background: #eaf5eb;
+      color: var(--good);
+    }
+
+    .rating-okay {
+      background: #fff2e3;
+      color: var(--okay);
+    }
+
+    .rating-weak {
+      background: #fdeaea;
+      color: var(--weak);
+    }
+
+    .viva-details {
+      margin-top: 13px;
+      font-size: 0.91rem;
+      line-height: 1.5;
+    }
+
+    .detail-label {
+      font-weight: 600;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #eef1f4;
+      padding: 4px 8px;
+      border-radius: 15px;
+      margin: 3px 3px 0 0;
+      font-size: 0.78rem;
+      color: #4b5563;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .row-actions button {
+      padding: 7px 10px;
+      font-size: 0.8rem;
+    }
+
+    .empty-state {
+      padding: 30px 12px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .review-due {
+      border-left: 4px solid var(--weak);
+    }
+
+    .review-upcoming {
+      border-left: 4px solid var(--okay);
+    }
+
+    .search-bar {
+      margin-bottom: 15px;
+    }
+
+    .topic-row {
+      display: grid;
+      grid-template-columns: minmax(130px, 1fr) 3fr 50px;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 11px;
+      font-size: 0.88rem;
+    }
+
+    .bar-bg {
+      height: 10px;
+      background: #edf0f2;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 10px;
+    }
+
+    .small-muted {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .notice {
+      background: #fff8df;
+      border: 1px solid #f0df9b;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.87rem;
+      margin-bottom: 18px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 750px) {
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-full {
+        grid-column: auto;
+      }
+
+      .header-inner {
+        align-items: flex-start;
+      }
+
+      main {
+        padding: 18px 12px 50px;
+      }
+
+      .card {
+        padding: 17px;
+      }
+
+      .topic-row {
+        grid-template-columns: 110px 1fr 40px;
+      }
+    }
+
+    @media (max-width: 450px) {
+      .stats-grid {
+        gap: 9px;
+      }
+
+      .stat-card {
+        padding: 15px;
+      }
+
+      .stat-number {
+        font-size: 1.6rem;
+      }
+
+      .rating-options {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 1.15rem;
+      }
+
+      header p {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-inner">
+      <div>
+        <h1>Primary Viva Tracker</h1>
+        <p>Practice. Review. Repeat.</p>
+      </div>
+
+      <button class="button-primary" onclick="openNewViva()">
+        + Log Viva
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <nav class="nav">
+      <button class="active" onclick="showPage('dashboard', this)">Dashboard</button>
+      <button onclick="showPage('log', this)">Log Viva</button>
+      <button onclick="showPage('review', this)">Review Queue</button>
+      <button onclick="showPage('history', this)">History</button>
+      <button onclick="showPage('stats', this)">Stats</button>
+    </nav>
+
+    <!-- DASHBOARD -->
+
+    <section id="dashboard" class="page active">
+
+      <div class="notice">
+        This first version stores your data on this device only.
+        Once we have the tracker working the way you want, we can add cloud sync
+        so the same vivas appear on your phone, iPad and computer.
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total vivas</div>
+          <div class="stat-number" id="totalVivas">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Last 7 days</div>
+          <div class="stat-number" id="recentVivas">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Needs work</div>
+          <div class="stat-number" id="weakVivas">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Due for review</div>
+          <div class="stat-number" id="dueReviews">0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-heading">
+          <h2>Due for review</h2>
+          <button class="button-secondary" onclick="showPageByName('review')">
+            View all
+          </button>
+        </div>
+        <div id="dashboardReviewList" class="viva-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-heading">
+          <h2>Recent vivas</h2>
+          <button class="button-secondary" onclick="showPageByName('history')">
+            View history
+          </button>
+        </div>
+        <div id="recentList" class="viva-list"></div>
+      </div>
+    </section>
+
+    <!-- LOG -->
+
+    <section id="log" class="page">
+      <div class="card">
+        <h2 id="formTitle">Log a viva</h2>
+
+        <form id="vivaForm">
+          <input type="hidden" id="editId" />
+
+          <div class="form-grid">
+
+            <div>
+              <label for="date">Date</label>
+              <input type="date" id="date" required />
+            </div>
+
+            <div>
+              <label for="type">Viva type</label>
+              <select id="type">
+                <option value="Received">Received</option>
+                <option value="Given">Given</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="category">Area</label>
+              <select id="category">
+                <option value="">Choose area</option>
+                <option>Physiology</option>
+                <option>Pharmacology</option>
+                <option>Equipment & Measurement</option>
+                <option>Anatomy</option>
+                <option>Statistics</option>
+                <option>Integrated / Mixed</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="topic">Topic</label>
+              <input
+                type="text"
+                id="topic"
+                placeholder="e.g. Cerebral blood flow"
+                required
+              />
+            </div>
+
+            <div class="form-full">
+              <label>Overall performance</label>
+
+              <div class="rating-options">
+
+                <div class="rating-option">
+                  <input
+                    type="radio"
+                    id="ratingWeak"
+                    name="rating"
+                    value="Needs work"
+                    required
+                  />
+                  <label for="ratingWeak">🔴 Needs work</label>
+                </div>
+
+                <div class="rating-option">
+                  <input
+                    type="radio"
+                    id="ratingOkay"
+                    name="rating"
+                    value="Okay"
+                  />
+                  <label for="ratingOkay">🟠 Okay</label>
+                </div>
+
+                <div class="rating-option">
+                  <input
+                    type="radio"
+                    id="ratingStrong"
+                    name="rating"
+                    value="Strong"
+                  />
+                  <label for="ratingStrong">🟢 Strong</label>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="form-full">
+              <label for="questions">Questions asked</label>
+              <textarea
+                id="questions"
+                placeholder="What did the examiner ask?"
+              ></textarea>
+            </div>
+
+            <div class="form-full">
+              <label for="feedback">Feedback / reflection</label>
+              <textarea
+                id="feedback"
+                placeholder="What went well? Where did you struggle?"
+              ></textarea>
+            </div>
+
+            <div class="form-full">
+              <label>What went wrong?</label>
+
+              <div class="weakness-tags">
+
+                <div class="weakness-tag">
+                  <input type="checkbox" id="wKnowledge" value="Knowledge gap" />
+                  <label for="wKnowledge">Knowledge gap</label>
+                </div>
+
+                <div class="weakness-tag">
+                  <input type="checkbox" id="wStructure" value="Poor structure" />
+                  <label for="wStructure">Poor structure</label>
+                </div>
+
+                <div class="weakness-tag">
+                  <input type="checkbox" id="wPrompting" value="Needed prompting" />
+                  <label for="wPrompting">Needed prompting</label>
+                </div>
+
+                <div class="weakness-tag">
+                  <input type="checkbox" id="wIncorrect" value="Incorrect fact" />
+                  <label for="wIncorrect">Incorrect fact</label>
+                </div>
+
+                <div class="weakness-tag">
+                  <input type="checkbox" id="wDepth" value="Insufficient depth" />
+                  <label for="wDepth">Insufficient depth</label>
+                </div>
+
+                <div class="weakness-tag">
+                  <input type="checkbox" id="wCommunication" value="Communication" />
+                  <label for="wCommunication">Communication</label>
+                </div>
+
+                <div class="weakness-tag">
+                  <input
+                    type="checkbox"
+                    id="wQuestion"
+                    value="Didn't answer question"
+                  />
+                  <label for="wQuestion">Didn't answer question</label>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="form-full">
+              <label for="revision">What do I need to revise?</label>
+              <textarea
+                id="revision"
+                placeholder="Key facts, concepts or skeleton to revisit"
+              ></textarea>
+            </div>
+
+            <div>
+              <label for="reviewDate">Review again</label>
+              <input type="date" id="reviewDate" />
+            </div>
+
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              class="button-secondary"
+              onclick="resetForm()"
+            >
+              Clear
+            </button>
+
+            <button type="submit" class="button-primary">
+              Save Viva
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- REVIEW -->
+
+    <section id="review" class="page">
+      <div class="card">
+        <h2>Review Queue</h2>
+        <p class="small-muted">
+          Vivas you've scheduled to revisit.
+        </p>
+        <div id="reviewList" class="viva-list"></div>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+
+    <section id="history" class="page">
+      <div class="card">
+
+        <div class="section-heading">
+          <h2>Viva History</h2>
+          <button class="button-secondary" onclick="exportData()">
+            Export backup
+          </button>
+        </div>
+
+        <div class="search-bar">
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Search topics, questions or feedback..."
+            oninput="renderHistory()"
+          />
+        </div>
+
+        <div id="historyList" class="viva-list"></div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+
+    <section id="stats" class="page">
+
+      <div class="card">
+        <h2>Performance</h2>
+        <div id="performanceStats"></div>
+      </div>
+
+      <div class="card">
+        <h2>Vivas by area</h2>
+        <div id="topicStats"></div>
+      </div>
+
+      <div class="card">
+        <h2>Most common weaknesses</h2>
+        <div id="weaknessStats"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    let vivas = JSON.parse(localStorage.getItem("primaryVivas")) || [];
+
+    function saveData() {
+      localStorage.setItem("primaryVivas", JSON.stringify(vivas));
+    }
+
+    function todayString() {
+      const today = new Date();
+      return today.toISOString().split("T")[0];
+    }
+
+    function addDays(dateString, days) {
+      const date = new Date(dateString + "T00:00:00");
+      date.setDate(date.getDate() + days);
+      return date.toISOString().split("T")[0];
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return "";
+
+      const date = new Date(dateString + "T00:00:00");
+
+      return date.toLocaleDateString("en-AU", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    function showPage(pageName, button) {
+      document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+      });
+
+      document.getElementById(pageName).classList.add("active");
+
+      document.querySelectorAll(".nav button").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      if (button) button.classList.add("active");
+
+      refreshAll();
+    }
+
+    function showPageByName(pageName) {
+      const buttons = Array.from(document.querySelectorAll(".nav button"));
+
+      const matchingButton = buttons.find(button =>
+        button.getAttribute("onclick")?.includes("'" + pageName + "'")
+      );
+
+      showPage(pageName, matchingButton);
+    }
+
+    function openNewViva() {
+      resetForm();
+      showPageByName("log");
+    }
+
+    function resetForm() {
+      document.getElementById("vivaForm").reset();
+      document.getElementById("editId").value = "";
+      document.getElementById("formTitle").textContent = "Log a viva";
+      document.getElementById("date").value = todayString();
+      document.getElementById("reviewDate").value =
+        addDays(todayString(), 3);
+    }
+
+    document
+      .getElementById("vivaForm")
+      .addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const ratingElement =
+          document.querySelector('input[name="rating"]:checked');
+
+        if (!ratingElement) {
+          alert("Please choose a performance rating.");
+          return;
+        }
+
+        const weaknesses = Array.from(
+          document.querySelectorAll(".weakness-tag input:checked")
+        ).map(item => item.value);
+
+        const viva = {
+          id: document.getElementById("editId").value ||
+            Date.now().toString(),
+
+          date: document.getElementById("date").value,
+          type: document.getElementById("type").value,
+          category: document.getElementById("category").value,
+          topic: document.getElementById("topic").value.trim(),
+          rating: ratingElement.value,
+          questions: document.getElementById("questions").value.trim(),
+          feedback: document.getElementById("feedback").value.trim(),
+          weaknesses,
+          revision: document.getElementById("revision").value.trim(),
+          reviewDate: document.getElementById("reviewDate").value
+        };
+
+        const existingIndex =
+          vivas.findIndex(item => item.id === viva.id);
+
+        if (existingIndex >= 0) {
+          vivas[existingIndex] = viva;
+        } else {
+          vivas.push(viva);
+        }
+
+        saveData();
+        resetForm();
+        refreshAll();
+        showPageByName("dashboard");
+      });
+
+    function ratingClass(rating) {
+      if (rating === "Strong") return "rating-good";
+      if (rating === "Okay") return "rating-okay";
+      return "rating-weak";
+    }
+
+    function renderViva(viva, reviewMode = false) {
+      const weaknesses =
+        viva.weaknesses && viva.weaknesses.length
+          ? viva.weaknesses
+              .map(tag => `<span class="tag">${escapeHTML(tag)}</span>`)
+              .join("")
+          : "";
+
+      const today = todayString();
+
+      let reviewClass = "";
+
+      if (reviewMode && viva.reviewDate) {
+        reviewClass =
+          viva.reviewDate <= today
+            ? "review-due"
+            : "review-upcoming";
+      }
+
+      return `
+        <div class="viva-row ${reviewClass}">
+
+          <div class="viva-row-top">
+            <div>
+              <div class="viva-title">
+                ${escapeHTML(viva.topic)}
+              </div>
+
+              <div class="viva-meta">
+                ${formatDate(viva.date)}
+                · ${escapeHTML(viva.type)}
+                ${viva.category
+                  ? " · " + escapeHTML(viva.category)
+                  : ""}
+              </div>
+            </div>
+
+            <span class="rating-badge ${ratingClass(viva.rating)}">
+              ${escapeHTML(viva.rating)}
+            </span>
+          </div>
+
+          <div class="viva-details">
+
+            ${
+              viva.questions
+                ? `
+                  <div>
+                    <span class="detail-label">Questions:</span>
+                    ${escapeHTML(viva.questions)}
+                  </div>
+                `
+                : ""
+            }
+
+            ${
+              viva.feedback
+                ? `
+                  <div>
+                    <span class="detail-label">Feedback:</span>
+                    ${escapeHTML(viva.feedback)}
+                  </div>
+                `
+                : ""
+            }
+
+            ${
+              viva.revision
+                ? `
+                  <div>
+                    <span class="detail-label">Revise:</span>
+                    ${escapeHTML(viva.revision)}
+                  </div>
+                `
+                : ""
+            }
+
+            ${
+              viva.reviewDate
+                ? `
+                  <div>
+                    <span class="detail-label">Review:</span>
+                    ${formatDate(viva.reviewDate)}
+                  </div>
+                `
+                : ""
+            }
+
+            ${
+              weaknesses
+                ? `<div style="margin-top:7px">${weaknesses}</div>`
+                : ""
+            }
+
+          </div>
+
+          <div class="row-actions">
+            <button
+              class="button-secondary"
+              onclick="editViva('${viva.id}')"
+            >
+              Edit
+            </button>
+
+            <button
+              class="button-danger"
+              onclick="deleteViva('${viva.id}')"
+            >
+              Delete
+            </button>
+          </div>
+
+        </div>
+      `;
+    }
+
+    function escapeHTML(value) {
+      if (!value) return "";
+
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function editViva(id) {
+      const viva = vivas.find(item => item.id === id);
+      if (!viva) return;
+
+      showPageByName("log");
+
+      document.getElementById("formTitle").textContent = "Edit viva";
+      document.getElementById("editId").value = viva.id;
+      document.getElementById("date").value = viva.date;
+      document.getElementById("type").value = viva.type;
+      document.getElementById("category").value = viva.category || "";
+      document.getElementById("topic").value = viva.topic || "";
+      document.getElementById("questions").value = viva.questions || "";
+      document.getElementById("feedback").value = viva.feedback || "";
+      document.getElementById("revision").value = viva.revision || "";
+      document.getElementById("reviewDate").value = viva.reviewDate || "";
+
+      const rating =
+        document.querySelector(
+          `input[name="rating"][value="${viva.rating}"]`
+        );
+
+      if (rating) rating.checked = true;
+
+      document.querySelectorAll(".weakness-tag input").forEach(input => {
+        input.checked =
+          (viva.weaknesses || []).includes(input.value);
+      });
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function deleteViva(id) {
+      if (!confirm("Delete this viva?")) return;
+
+      vivas = vivas.filter(item => item.id !== id);
+      saveData();
+      refreshAll();
+    }
+
+    function renderDashboard() {
+      document.getElementById("totalVivas").textContent = vivas.length;
+
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+      sevenDaysAgo.setHours(0, 0, 0, 0);
+
+      const recentCount = vivas.filter(viva => {
+        const vivaDate = new Date(viva.date + "T00:00:00");
+        return vivaDate >= sevenDaysAgo;
+      }).length;
+
+      document.getElementById("recentVivas").textContent =
+        recentCount;
+
+      document.getElementById("weakVivas").textContent =
+        vivas.filter(viva => viva.rating === "Needs work").length;
+
+      const today = todayString();
+
+      const due = vivas
+        .filter(viva =>
+          viva.reviewDate &&
+          viva.reviewDate <= today
+        )
+        .sort((a, b) =>
+          a.reviewDate.localeCompare(b.reviewDate)
+        );
+
+      document.getElementById("dueReviews").textContent =
+        due.length;
+
+      const dashboardReview =
+        document.getElementById("dashboardReviewList");
+
+      if (!due.length) {
+        dashboardReview.innerHTML =
+          `<div class="empty-state">Nothing due today 🎉</div>`;
+      } else {
+        dashboardReview.innerHTML =
+          due
+            .slice(0, 4)
+            .map(viva => renderViva(viva, true))
+            .join("");
+      }
+
+      const recent = [...vivas]
+        .sort((a, b) => b.date.localeCompare(a.date))
+        .slice(0, 5);
+
+      document.getElementById("recentList").innerHTML =
+        recent.length
+          ? recent.map(viva => renderViva(viva)).join("")
+          : `<div class="empty-state">
+               No vivas logged yet. Your first one will appear here.
+             </div>`;
+    }
+
+    function renderReviewQueue() {
+      const today = todayString();
+
+      const reviews = vivas
+        .filter(viva => viva.reviewDate)
+        .sort((a, b) =>
+          a.reviewDate.localeCompare(b.reviewDate)
+        );
+
+      const list = document.getElementById("reviewList");
+
+      if (!reviews.length) {
+        list.innerHTML =
+          `<div class="empty-state">
+             No vivas currently scheduled for review.
+           </div>`;
+        return;
+      }
+
+      const overdue = reviews.filter(viva =>
+        viva.reviewDate <= today
+      );
+
+      const upcoming = reviews.filter(viva =>
+        viva.reviewDate > today
+      );
+
+      let html = "";
+
+      if (overdue.length) {
+        html += `
+          <div class="small-muted"
+               style="margin: 5px 0 10px; font-weight:700;">
+            DUE NOW
+          </div>
+        `;
+
+        html += overdue
+          .map(viva => renderViva(viva, true))
+          .join("");
+      }
+
+      if (upcoming.length) {
+        html += `
+          <div class="small-muted"
+               style="margin: 22px 0 10px; font-weight:700;">
+            UPCOMING
+          </div>
+        `;
+
+        html += upcoming
+          .map(viva => renderViva(viva, true))
+          .join("");
+      }
+
+      list.innerHTML = html;
+    }
+
+    function renderHistory() {
+      const search =
+        document
+          .getElementById("searchInput")
+          .value
+          .toLowerCase()
+          .trim();
+
+      let results = [...vivas]
+        .sort((a, b) => b.date.localeCompare(a.date));
+
+      if (search) {
+        results = results.filter(viva => {
+          const content = [
+            viva.topic,
+            viva.category,
+            viva.questions,
+            viva.feedback,
+            viva.revision,
+            ...(viva.weaknesses || [])
+          ]
+            .join(" ")
+            .toLowerCase();
+
+          return content.includes(search);
+        });
+      }
+
+      document.getElementById("historyList").innerHTML =
+        results.length
+          ? results.map(viva => renderViva(viva)).join("")
+          : `<div class="empty-state">
+               No matching vivas found.
+             </div>`;
+    }
+
+    function renderStats() {
+      renderPerformanceStats();
+      renderTopicStats();
+      renderWeaknessStats();
+    }
+
+    function renderPerformanceStats() {
+      const ratings = [
+        ["Strong", "rating-good"],
+        ["Okay", "rating-okay"],
+        ["Needs work", "rating-weak"]
+      ];
+
+      if (!vivas.length) {
+        document.getElementById("performanceStats").innerHTML =
+          `<div class="empty-state">No data yet.</div>`;
+        return;
+      }
+
+      let html = "";
+
+      ratings.forEach(([rating]) => {
+        const count =
+          vivas.filter(viva => viva.rating === rating).length;
+
+        const percent =
+          Math.round((count / vivas.length) * 100);
+
+        html += `
+          <div class="topic-row">
+            <div>${rating}</div>
+
+            <div class="bar-bg">
+              <div
+                class="bar-fill"
+                style="width:${percent}%"
+              ></div>
+            </div>
+
+            <div>${count}</div>
+          </div>
+        `;
+      });
+
+      document.getElementById("performanceStats").innerHTML = html;
+    }
+
+    function renderTopicStats() {
+      const counts = {};
+
+      vivas.forEach(viva => {
+        const category = viva.category || "Uncategorised";
+        counts[category] = (counts[category] || 0) + 1;
+      });
+
+      const entries =
+        Object.entries(counts)
+          .sort((a, b) => b[1] - a[1]);
+
+      if (!entries.length) {
+        document.getElementById("topicStats").innerHTML =
+          `<div class="empty-state">No data yet.</div>`;
+        return;
+      }
+
+      const maximum =
+        Math.max(...entries.map(entry => entry[1]));
+
+      document.getElementById("topicStats").innerHTML =
+        entries
+          .map(([category, count]) => `
+            <div class="topic-row">
+              <div>${escapeHTML(category)}</div>
+
+              <div class="bar-bg">
+                <div
+                  class="bar-fill"
+                  style="width:${(count / maximum) * 100}%"
+                ></div>
+              </div>
+
+              <div>${count}</div>
+            </div>
+          `)
+          .join("");
+    }
+
+    function renderWeaknessStats() {
+      const counts = {};
+
+      vivas.forEach(viva => {
+        (viva.weaknesses || []).forEach(weakness => {
+          counts[weakness] = (counts[weakness] || 0) + 1;
+        });
+      });
+
+      const entries =
+        Object.entries(counts)
+          .sort((a, b) => b[1] - a[1]);
+
+      if (!entries.length) {
+        document.getElementById("weaknessStats").innerHTML =
+          `<div class="empty-state">
+             No weaknesses recorded yet.
+           </div>`;
+        return;
+      }
+
+      const maximum =
+        Math.max(...entries.map(entry => entry[1]));
+
+      document.getElementById("weaknessStats").innerHTML =
+        entries
+          .map(([weakness, count]) => `
+            <div class="topic-row">
+              <div>${escapeHTML(weakness)}</div>
+
+              <div class="bar-bg">
+                <div
+                  class="bar-fill"
+                  style="width:${(count / maximum) * 100}%"
+                ></div>
+              </div>
+
+              <div>${count}</div>
+            </div>
+          `)
+          .join("");
+    }
+
+    function exportData() {
+      const data =
+        JSON.stringify(vivas, null, 2);
+
+      const blob =
+        new Blob([data], { type: "application/json" });
+
+      const url =
+        URL.createObjectURL(blob);
+
+      const link =
+        document.createElement("a");
+
+      link.href = url;
+      link.download =
+        `primary-viva-backup-${todayString()}.json`;
+
+      link.click();
+
+      URL.revokeObjectURL(url);
+    }
+
+    function refreshAll() {
+      renderDashboard();
+      renderReviewQueue();
+      renderHistory();
+      renderStats();
+    }
+
+    resetForm();
+    refreshAll();
+  </script>
+
+</body>
+</html>
