@@ -3,71 +3,80 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Primary Viva Tracker</title>
-
   <style>
     :root {
-      --bg: #f5f6f8;
+      --bg: #f4f7ff;
       --card: #ffffff;
-      --text: #202124;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --primary: #34495e;
-      --primary-light: #edf1f5;
-      --good: #2e7d32;
-      --okay: #ef6c00;
-      --weak: #c62828;
-      --review: #7c3aed;
-      --shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-      --radius: 14px;
+      --text: #172033;
+      --muted: #68738a;
+      --border: #dfe6f2;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #dbeafe;
+      --secondary: #7c3aed;
+      --secondary-light: #ede9fe;
+      --good: #16a34a;
+      --good-light: #dcfce7;
+      --okay: #f59e0b;
+      --okay-light: #fef3c7;
+      --weak: #ef4444;
+      --weak-light: #fee2e2;
+      --unrated: #64748b;
+      --unrated-light: #f1f5f9;
+      --shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
+      --radius: 16px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Helvetica,
-        Arial,
-        sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
     }
 
     header {
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      padding: 18px 20px;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: white;
+      padding: 20px;
       position: sticky;
       top: 0;
       z-index: 10;
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.22);
     }
 
     .header-inner {
       max-width: 1100px;
       margin: auto;
+      position: relative;
+      min-height: 58px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      justify-content: center;
     }
+
+    .header-copy { text-align: center; }
 
     h1 {
       margin: 0;
-      font-size: 1.35rem;
+      font-size: 1.55rem;
+      letter-spacing: -0.02em;
     }
 
     header p {
-      margin: 3px 0 0;
-      color: var(--muted);
+      margin: 5px 0 0;
+      color: rgba(255, 255, 255, 0.86);
       font-size: 0.9rem;
+      font-style: italic;
+    }
+
+    .header-action {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
     }
 
     main {
@@ -93,16 +102,16 @@
       font-size: 0.95rem;
       cursor: pointer;
       white-space: nowrap;
+      font-weight: 600;
     }
 
     .nav button.active {
       background: var(--primary);
       color: white;
+      box-shadow: 0 5px 12px rgba(37, 99, 235, 0.22);
     }
 
-    button {
-      font: inherit;
-    }
+    button { font: inherit; }
 
     .button-primary {
       border: none;
@@ -111,7 +120,20 @@
       border-radius: 10px;
       padding: 11px 17px;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
+    }
+
+    .button-primary:hover { background: var(--primary-dark); }
+
+    .button-header {
+      border: 1px solid rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.16);
+      color: white;
+      border-radius: 10px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: 700;
+      backdrop-filter: blur(4px);
     }
 
     .button-secondary {
@@ -121,24 +143,20 @@
       border-radius: 10px;
       padding: 10px 15px;
       cursor: pointer;
+      font-weight: 600;
     }
 
     .button-danger {
       border: none;
-      background: #fdecec;
-      color: var(--weak);
+      background: var(--weak-light);
+      color: #b91c1c;
       border-radius: 9px;
       padding: 8px 12px;
       cursor: pointer;
     }
 
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
+    .page { display: none; }
+    .page.active { display: block; }
 
     .card,
     .stat-card {
@@ -161,33 +179,54 @@
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.3fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
       margin-bottom: 18px;
     }
 
-    .streak-card {
-      padding: 24px;
+    .hero-card {
+      padding: 22px;
+      min-width: 0;
     }
 
-    .streak-label {
+    .hero-label {
       color: var(--muted);
-      font-size: 0.85rem;
+      font-size: 0.78rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-weight: 700;
-    }
-
-    .streak-number {
-      font-size: 3rem;
-      line-height: 1;
+      letter-spacing: 0.07em;
       font-weight: 800;
-      margin: 8px 0 3px;
     }
 
+    .countdown-card {
+      background: linear-gradient(145deg, #eff6ff, #eef2ff);
+      border-color: #bfdbfe;
+    }
+
+    .countdown-number,
+    .streak-number {
+      font-size: 2.8rem;
+      line-height: 1;
+      font-weight: 850;
+      margin: 10px 0 5px;
+      color: var(--primary-dark);
+    }
+
+    .countdown-sub,
     .streak-subtext {
       color: var(--muted);
-      margin-bottom: 22px;
+      font-size: 0.9rem;
+    }
+
+    .countdown-date {
+      margin-top: 17px;
+      display: inline-block;
+      background: white;
+      color: var(--primary-dark);
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
     }
 
     .goal-progress {
@@ -195,26 +234,27 @@
       justify-content: space-between;
       gap: 15px;
       align-items: center;
-      margin-bottom: 8px;
+      margin: 18px 0 8px;
+      font-size: 0.88rem;
     }
 
     .progress-bg {
       width: 100%;
       height: 12px;
       border-radius: 999px;
-      background: #edf0f2;
+      background: #e7edf7;
       overflow: hidden;
     }
 
     .progress-fill {
       height: 100%;
-      background: var(--primary);
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
       border-radius: 999px;
       transition: width 0.2s ease;
     }
 
     .goal-setting {
-      margin-top: 18px;
+      margin-top: 15px;
       display: flex;
       align-items: center;
       flex-wrap: wrap;
@@ -222,57 +262,94 @@
     }
 
     .goal-setting input {
-      width: 70px;
+      width: 62px;
       padding: 8px;
-    }
-
-    .week-card {
-      padding: 22px;
     }
 
     .week-total {
       font-size: 1.6rem;
-      font-weight: 750;
-      margin-bottom: 15px;
+      font-weight: 800;
+      margin: 10px 0 17px;
+      color: var(--secondary);
     }
 
     .week-strip {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 7px;
+      gap: 6px;
     }
 
-    .week-day {
-      text-align: center;
-    }
+    .week-day { text-align: center; }
 
     .week-day-name {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--muted);
       margin-bottom: 6px;
     }
 
     .week-circle {
-      width: 38px;
-      height: 38px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       margin: auto;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #edf0f2;
-      font-weight: 700;
-      font-size: 0.85rem;
+      background: #edf1f7;
+      font-weight: 800;
+      font-size: 0.8rem;
     }
 
     .week-circle.hit-goal {
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
     }
 
     .week-circle.some {
       background: var(--primary-light);
-      color: var(--primary);
+      color: var(--primary-dark);
+    }
+
+    .quick-log-card {
+      border: 1px solid #bfdbfe;
+      background: linear-gradient(145deg, #ffffff, #f8fbff);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quick-log-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: linear-gradient(var(--primary), var(--secondary));
+    }
+
+    .quick-log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .quick-log-header h2 { margin-bottom: 4px; }
+
+    .quick-log-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.2fr 2fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .quick-log-grid label { margin-bottom: 5px; }
+
+    .quick-note {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 10px;
     }
 
     .stats-grid {
@@ -284,11 +361,16 @@
 
     .stat-card {
       padding: 20px;
+      border-top: 4px solid var(--primary);
     }
+
+    .stat-card:nth-child(2) { border-top-color: var(--secondary); }
+    .stat-card:nth-child(3) { border-top-color: var(--weak); }
+    .stat-card:nth-child(4) { border-top-color: var(--okay); }
 
     .stat-number {
       font-size: 2rem;
-      font-weight: 700;
+      font-weight: 800;
       margin-top: 5px;
     }
 
@@ -310,13 +392,11 @@
       gap: 15px;
     }
 
-    .form-full {
-      grid-column: 1 / -1;
-    }
+    .form-full { grid-column: 1 / -1; }
 
     label {
       display: block;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 0.88rem;
       margin-bottom: 6px;
     }
@@ -325,7 +405,7 @@
     select,
     textarea {
       width: 100%;
-      border: 1px solid #d8dce2;
+      border: 1px solid #d6dfed;
       border-radius: 9px;
       padding: 11px 12px;
       font: inherit;
@@ -336,7 +416,7 @@
     input:focus,
     select:focus,
     textarea:focus {
-      outline: 2px solid #c8d3df;
+      outline: 3px solid rgba(37, 99, 235, 0.12);
       border-color: var(--primary);
     }
 
@@ -351,9 +431,7 @@
       gap: 9px;
     }
 
-    .rating-option input {
-      display: none;
-    }
+    .rating-option input { display: none; }
 
     .rating-option label {
       margin: 0;
@@ -377,12 +455,10 @@
       gap: 8px;
     }
 
-    .weakness-tag input {
-      display: none;
-    }
+    .weakness-tag input { display: none; }
 
     .weakness-tag label {
-      font-weight: 500;
+      font-weight: 600;
       margin: 0;
       border: 1px solid var(--border);
       padding: 8px 10px;
@@ -406,6 +482,7 @@
       cursor: pointer;
       color: var(--muted);
       font-size: 0.82rem;
+      font-weight: 600;
     }
 
     .quick-review-buttons button:hover {
@@ -441,7 +518,7 @@
     }
 
     .viva-title {
-      font-weight: 700;
+      font-weight: 800;
       margin-bottom: 4px;
     }
 
@@ -452,27 +529,17 @@
 
     .rating-badge {
       display: inline-block;
-      font-size: 0.78rem;
-      font-weight: 700;
+      font-size: 0.76rem;
+      font-weight: 800;
       border-radius: 20px;
       padding: 5px 9px;
       white-space: nowrap;
     }
 
-    .rating-good {
-      background: #eaf5eb;
-      color: var(--good);
-    }
-
-    .rating-okay {
-      background: #fff2e3;
-      color: var(--okay);
-    }
-
-    .rating-weak {
-      background: #fdeaea;
-      color: var(--weak);
-    }
+    .rating-good { background: var(--good-light); color: #15803d; }
+    .rating-okay { background: var(--okay-light); color: #b45309; }
+    .rating-weak { background: var(--weak-light); color: #b91c1c; }
+    .rating-unrated { background: var(--unrated-light); color: var(--unrated); }
 
     .viva-details {
       margin-top: 13px;
@@ -480,18 +547,17 @@
       line-height: 1.5;
     }
 
-    .detail-label {
-      font-weight: 600;
-    }
+    .detail-label { font-weight: 700; }
 
     .tag {
       display: inline-block;
-      background: #eef1f4;
+      background: var(--secondary-light);
+      color: #6d28d9;
       padding: 4px 8px;
       border-radius: 15px;
       margin: 3px 3px 0 0;
       font-size: 0.78rem;
-      color: #4b5563;
+      font-weight: 600;
     }
 
     .row-actions {
@@ -511,17 +577,10 @@
       color: var(--muted);
     }
 
-    .review-due {
-      border-left: 4px solid var(--weak);
-    }
+    .review-due { border-left: 4px solid var(--weak); }
+    .review-upcoming { border-left: 4px solid var(--okay); }
 
-    .review-upcoming {
-      border-left: 4px solid var(--okay);
-    }
-
-    .search-bar {
-      margin-bottom: 15px;
-    }
+    .search-bar { margin-bottom: 15px; }
 
     .topic-row {
       display: grid;
@@ -534,14 +593,14 @@
 
     .bar-bg {
       height: 10px;
-      background: #edf0f2;
+      background: #edf0f5;
       border-radius: 10px;
       overflow: hidden;
     }
 
     .bar-fill {
       height: 100%;
-      background: var(--primary);
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
       border-radius: 10px;
     }
 
@@ -551,8 +610,9 @@
     }
 
     .notice {
-      background: #fff8df;
-      border: 1px solid #f0df9b;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
       border-radius: 10px;
       padding: 12px 14px;
       font-size: 0.87rem;
@@ -560,8 +620,7 @@
       line-height: 1.45;
     }
 
-    /* CALENDAR */
-
+    /* Calendar */
     .calendar-header {
       display: flex;
       align-items: center;
@@ -572,7 +631,7 @@
 
     .calendar-title {
       font-size: 1.25rem;
-      font-weight: 750;
+      font-weight: 800;
       text-align: center;
     }
 
@@ -583,6 +642,7 @@
       border-radius: 10px;
       border: 1px solid var(--border);
       background: white;
+      color: var(--primary);
       cursor: pointer;
       font-size: 1.2rem;
     }
@@ -609,33 +669,24 @@
       border-radius: 50%;
     }
 
-    .legend-viva {
-      background: var(--primary);
-    }
+    .legend-viva { background: var(--primary); }
+    .legend-review { background: var(--secondary); }
 
-    .legend-review {
-      background: var(--review);
-    }
-
-    .calendar-weekdays {
+    .calendar-weekdays,
+    .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       gap: 6px;
-      margin-bottom: 6px;
     }
+
+    .calendar-weekdays { margin-bottom: 6px; }
 
     .calendar-weekday {
       text-align: center;
       color: var(--muted);
       font-size: 0.75rem;
-      font-weight: 700;
+      font-weight: 800;
       padding: 5px;
-    }
-
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
     }
 
     .calendar-cell {
@@ -647,28 +698,16 @@
       cursor: pointer;
       text-align: left;
       position: relative;
+      color: var(--text);
     }
 
-    .calendar-cell:hover {
-      background: #fafbfc;
-    }
-
-    .calendar-cell.empty {
-      border-color: transparent;
-      background: transparent;
-      cursor: default;
-    }
-
-    .calendar-cell.today {
-      border: 2px solid var(--primary);
-    }
-
-    .calendar-cell.selected {
-      background: var(--primary-light);
-    }
+    .calendar-cell:hover { background: #f8fbff; }
+    .calendar-cell.empty { border-color: transparent; background: transparent; cursor: default; }
+    .calendar-cell.today { border: 2px solid var(--primary); }
+    .calendar-cell.selected { background: var(--primary-light); }
 
     .calendar-day-number {
-      font-weight: 700;
+      font-weight: 800;
       font-size: 0.88rem;
       margin-bottom: 8px;
     }
@@ -684,14 +723,14 @@
       background: var(--primary);
       color: white;
       font-size: 0.75rem;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .calendar-review-dot {
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      background: var(--review);
+      background: var(--secondary);
       position: absolute;
       bottom: 9px;
       right: 9px;
@@ -704,7 +743,7 @@
     }
 
     .calendar-detail-heading {
-      font-weight: 700;
+      font-weight: 800;
       margin-bottom: 12px;
     }
 
@@ -715,181 +754,94 @@
       align-items: center;
     }
 
-    .file-input {
-      display: none;
+    .file-input { display: none; }
+
+    @media (max-width: 850px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .quick-log-grid { grid-template-columns: 1fr 1fr; }
+      .quick-log-grid .quick-topic { grid-column: 1 / -1; }
+      .quick-log-grid .quick-submit { grid-column: 1 / -1; }
+      .quick-log-grid .quick-submit button { width: 100%; }
     }
 
     @media (max-width: 750px) {
-      .hero-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .stats-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .form-full {
-        grid-column: auto;
-      }
-
       .header-inner {
-        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
       }
 
-      main {
-        padding: 18px 12px 50px;
+      .header-action {
+        position: static;
+        transform: none;
       }
 
-      .card {
-        padding: 17px;
-      }
-
-      .topic-row {
-        grid-template-columns: 110px 1fr 40px;
-      }
-
-      .calendar-cell {
-        min-height: 70px;
-        padding: 6px;
-      }
-
-      .calendar-day-number {
-        font-size: 0.8rem;
-      }
-
-      .calendar-viva-count {
-        min-width: 22px;
-        height: 22px;
-        font-size: 0.7rem;
-      }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-full { grid-column: auto; }
+      main { padding: 18px 12px 50px; }
+      .card { padding: 17px; }
+      .topic-row { grid-template-columns: 110px 1fr 40px; }
+      .calendar-cell { min-height: 70px; padding: 6px; }
+      .calendar-day-number { font-size: 0.8rem; }
+      .calendar-viva-count { min-width: 22px; height: 22px; font-size: 0.7rem; }
     }
 
-    @media (max-width: 450px) {
-      .stats-grid {
-        gap: 9px;
-      }
-
-      .stat-card {
-        padding: 15px;
-      }
-
-      .stat-number {
-        font-size: 1.6rem;
-      }
-
-      .rating-options {
-        grid-template-columns: 1fr;
-      }
-
-      h1 {
-        font-size: 1.15rem;
-      }
-
-      header p {
-        font-size: 0.8rem;
-      }
-
-      .week-circle {
-        width: 32px;
-        height: 32px;
-      }
-
+    @media (max-width: 480px) {
+      .quick-log-grid { grid-template-columns: 1fr; }
+      .quick-log-grid .quick-topic,
+      .quick-log-grid .quick-submit { grid-column: auto; }
+      .stats-grid { gap: 9px; }
+      .stat-card { padding: 15px; }
+      .stat-number { font-size: 1.6rem; }
+      .rating-options { grid-template-columns: 1fr; }
+      h1 { font-size: 1.35rem; }
+      header p { font-size: 0.78rem; }
       .calendar-grid,
-      .calendar-weekdays {
-        gap: 3px;
-      }
-
-      .calendar-cell {
-        min-height: 58px;
-        padding: 5px;
-        border-radius: 7px;
-      }
-
-      .calendar-viva-count {
-        min-width: 20px;
-        height: 20px;
-        padding: 0 5px;
-      }
-
-      .calendar-review-dot {
-        width: 7px;
-        height: 7px;
-        right: 6px;
-        bottom: 6px;
-      }
+      .calendar-weekdays { gap: 3px; }
+      .calendar-cell { min-height: 58px; padding: 5px; border-radius: 7px; }
+      .calendar-viva-count { min-width: 20px; height: 20px; padding: 0 5px; }
+      .calendar-review-dot { width: 7px; height: 7px; right: 6px; bottom: 6px; }
     }
   </style>
 </head>
 
 <body>
-
   <header>
     <div class="header-inner">
-      <div>
+      <div class="header-copy">
         <h1>Primary Viva Tracker</h1>
-        <p>Practice. Review. Repeat.</p>
+        <p>“The harder you practise, the luckier you get.”</p>
       </div>
 
-      <button class="button-primary" onclick="openNewViva()">
-        + Log Viva
-      </button>
+      <div class="header-action">
+        <button class="button-header" onclick="openNewViva()">+ Full Log</button>
+      </div>
     </div>
   </header>
 
   <main>
-
     <nav class="nav">
-      <button class="active" data-page="dashboard" onclick="showPage('dashboard', this)">
-        Dashboard
-      </button>
-
-      <button data-page="log" onclick="showPage('log', this)">
-        Log Viva
-      </button>
-
-      <button data-page="review" onclick="showPage('review', this)">
-        Review Queue
-      </button>
-
-      <button data-page="calendar" onclick="showPage('calendar', this)">
-        Calendar
-      </button>
-
-      <button data-page="history" onclick="showPage('history', this)">
-        History
-      </button>
-
-      <button data-page="stats" onclick="showPage('stats', this)">
-        Stats
-      </button>
+      <button class="active" data-page="dashboard" onclick="showPage('dashboard', this)">Dashboard</button>
+      <button data-page="log" onclick="showPage('log', this)">Full Log</button>
+      <button data-page="review" onclick="showPage('review', this)">Review Queue</button>
+      <button data-page="calendar" onclick="showPage('calendar', this)">Calendar</button>
+      <button data-page="history" onclick="showPage('history', this)">History</button>
+      <button data-page="stats" onclick="showPage('stats', this)">Stats</button>
     </nav>
 
-
-    <!-- DASHBOARD -->
-
     <section id="dashboard" class="page active">
-
-      <div class="notice">
-        Your viva records are currently stored in this browser only.
-        Once you're happy with the tracker, we can add cloud sync so the same
-        data appears automatically on your Mac, iPhone and iPad.
-      </div>
-
       <div class="hero-grid">
+        <div class="card hero-card countdown-card">
+          <div class="hero-label">⏳ Until the viva</div>
+          <div class="countdown-number" id="countdownDays">—</div>
+          <div class="countdown-sub" id="countdownText">days to go</div>
+          <div class="countdown-date">18 October 2026</div>
+        </div>
 
-        <div class="card streak-card">
-
-          <div class="streak-label">🔥 Current streak</div>
-
+        <div class="card hero-card">
+          <div class="hero-label">🔥 Current streak</div>
           <div class="streak-number" id="streakNumber">0</div>
-
-          <div class="streak-subtext" id="streakText">
-            days
-          </div>
+          <div class="streak-subtext" id="streakText">days</div>
 
           <div class="goal-progress">
             <strong>Today</strong>
@@ -897,151 +849,127 @@
           </div>
 
           <div class="progress-bg">
-            <div
-              class="progress-fill"
-              id="todayGoalProgress"
-              style="width: 0%"
-            ></div>
+            <div class="progress-fill" id="todayGoalProgress" style="width: 0%"></div>
           </div>
 
           <div class="goal-setting">
             <span class="small-muted">Daily goal:</span>
-
-            <input
-              type="number"
-              id="dailyGoalInput"
-              min="1"
-              max="20"
-              value="2"
-            />
-
-            <button
-              class="button-secondary"
-              onclick="saveDailyGoal()"
-            >
-              Save goal
-            </button>
+            <input type="number" id="dailyGoalInput" min="1" max="20" value="2" />
+            <button class="button-secondary" onclick="saveDailyGoal()">Save</button>
           </div>
-
         </div>
 
-
-        <div class="card week-card">
-
-          <div class="streak-label">Last 7 days</div>
-
-          <div class="week-total">
-            <span id="weekTotal">0</span> vivas
-          </div>
-
+        <div class="card hero-card">
+          <div class="hero-label">Last 7 days</div>
+          <div class="week-total"><span id="weekTotal">0</span> vivas</div>
           <div id="weekStrip" class="week-strip"></div>
-
         </div>
-
       </div>
 
+      <div class="card quick-log-card">
+        <div class="quick-log-header">
+          <div>
+            <h2>⚡ Quick log</h2>
+            <div class="small-muted">For the viva you just did — save it in a few seconds.</div>
+          </div>
+        </div>
+
+        <form id="quickLogForm">
+          <div class="quick-log-grid">
+            <div>
+              <label for="quickType">Viva</label>
+              <select id="quickType">
+                <option value="Received">Received</option>
+                <option value="Given">Given</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="quickCategory">Area</label>
+              <select id="quickCategory" required>
+                <option value="">Choose area</option>
+                <option>Physiology</option>
+                <option>Pharmacology</option>
+                <option>Equipment & Measurement</option>
+                <option>Anatomy</option>
+                <option>Statistics</option>
+                <option>Integrated / Mixed</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="quick-topic">
+              <label for="quickTopic">Topic</label>
+              <input id="quickTopic" type="text" placeholder="e.g. Cerebral blood flow" required />
+            </div>
+
+            <div class="quick-submit">
+              <button type="submit" class="button-primary">+ Save viva</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="quick-note">Quick logs count toward your streak immediately. You can open them later in History and add a rating, feedback or review date.</div>
+      </div>
 
       <div class="stats-grid">
-
         <div class="stat-card">
           <div class="stat-label">Total vivas</div>
           <div class="stat-number" id="totalVivas">0</div>
         </div>
-
         <div class="stat-card">
           <div class="stat-label">Last 7 days</div>
           <div class="stat-number" id="recentVivas">0</div>
         </div>
-
         <div class="stat-card">
           <div class="stat-label">Needs work</div>
           <div class="stat-number" id="weakVivas">0</div>
         </div>
-
         <div class="stat-card">
           <div class="stat-label">Due for review</div>
           <div class="stat-number" id="dueReviews">0</div>
         </div>
-
       </div>
 
-
       <div class="card">
-
         <div class="section-heading">
           <h2>Due for review</h2>
-
-          <button
-            class="button-secondary"
-            onclick="showPageByName('review')"
-          >
-            View all
-          </button>
+          <button class="button-secondary" onclick="showPageByName('review')">View all</button>
         </div>
-
         <div id="dashboardReviewList" class="viva-list"></div>
-
       </div>
 
-
       <div class="card">
-
         <div class="section-heading">
           <h2>Recent vivas</h2>
-
-          <button
-            class="button-secondary"
-            onclick="showPageByName('history')"
-          >
-            View history
-          </button>
+          <button class="button-secondary" onclick="showPageByName('history')">View history</button>
         </div>
-
         <div id="recentList" class="viva-list"></div>
-
       </div>
-
     </section>
 
-
-    <!-- LOG VIVA -->
-
     <section id="log" class="page">
-
       <div class="card">
-
-        <h2 id="formTitle">Log a viva</h2>
-
+        <h2 id="formTitle">Full viva log</h2>
         <form id="vivaForm">
-
           <input type="hidden" id="editId" />
 
           <div class="form-grid">
-
             <div>
               <label for="date">Date</label>
-
-              <input
-                type="date"
-                id="date"
-                required
-              />
+              <input type="date" id="date" required />
             </div>
-
 
             <div>
               <label for="type">Viva type</label>
-
               <select id="type">
                 <option value="Received">Received</option>
                 <option value="Given">Given</option>
               </select>
             </div>
 
-
             <div>
               <label for="category">Area</label>
-
               <select id="category">
                 <option value="">Choose area</option>
                 <option>Physiology</option>
@@ -1054,2746 +982,670 @@
               </select>
             </div>
 
-
             <div>
               <label for="topic">Topic</label>
-
-              <input
-                type="text"
-                id="topic"
-                placeholder="e.g. Cerebral blood flow"
-                required
-              />
+              <input type="text" id="topic" placeholder="e.g. Cerebral blood flow" required />
             </div>
 
-
             <div class="form-full">
-
               <label>Overall performance</label>
-
               <div class="rating-options">
-
                 <div class="rating-option">
-                  <input
-                    type="radio"
-                    id="ratingWeak"
-                    name="rating"
-                    value="Needs work"
-                    required
-                  />
-
-                  <label for="ratingWeak">
-                    🔴 Needs work
-                  </label>
+                  <input type="radio" id="ratingWeak" name="rating" value="Needs work" />
+                  <label for="ratingWeak">🔴 Needs work</label>
                 </div>
-
-
                 <div class="rating-option">
-                  <input
-                    type="radio"
-                    id="ratingOkay"
-                    name="rating"
-                    value="Okay"
-                  />
-
-                  <label for="ratingOkay">
-                    🟠 Okay
-                  </label>
+                  <input type="radio" id="ratingOkay" name="rating" value="Okay" />
+                  <label for="ratingOkay">🟠 Okay</label>
                 </div>
-
-
                 <div class="rating-option">
-                  <input
-                    type="radio"
-                    id="ratingStrong"
-                    name="rating"
-                    value="Strong"
-                  />
-
-                  <label for="ratingStrong">
-                    🟢 Strong
-                  </label>
+                  <input type="radio" id="ratingStrong" name="rating" value="Strong" />
+                  <label for="ratingStrong">🟢 Strong</label>
                 </div>
-
               </div>
-
+              <div class="small-muted" style="margin-top:8px;">Optional — useful if you are coming back to complete a quick log.</div>
             </div>
 
-
             <div class="form-full">
-
-              <label for="questions">
-                Questions asked
-              </label>
-
-              <textarea
-                id="questions"
-                placeholder="What did the examiner ask?"
-              ></textarea>
-
+              <label for="questions">Questions asked</label>
+              <textarea id="questions" placeholder="What did the examiner ask?"></textarea>
             </div>
 
-
             <div class="form-full">
-
-              <label for="feedback">
-                Feedback / reflection
-              </label>
-
-              <textarea
-                id="feedback"
-                placeholder="What went well? Where did you struggle?"
-              ></textarea>
-
+              <label for="feedback">Feedback / reflection</label>
+              <textarea id="feedback" placeholder="What went well? Where did you struggle?"></textarea>
             </div>
 
-
             <div class="form-full">
-
               <label>What went wrong?</label>
-
               <div class="weakness-tags">
-
-                <div class="weakness-tag">
-                  <input
-                    type="checkbox"
-                    id="wKnowledge"
-                    value="Knowledge gap"
-                  />
-
-                  <label for="wKnowledge">
-                    Knowledge gap
-                  </label>
-                </div>
-
-
-                <div class="weakness-tag">
-                  <input
-                    type="checkbox"
-                    id="wStructure"
-                    value="Poor structure"
-                  />
-
-                  <label for="wStructure">
-                    Poor structure
-                  </label>
-                </div>
-
-
-                <div class="weakness-tag">
-                  <input
-                    type="checkbox"
-                    id="wPrompting"
-                    value="Needed prompting"
-                  />
-
-                  <label for="wPrompting">
-                    Needed prompting
-                  </label>
-                </div>
-
-
-                <div class="weakness-tag">
-                  <input
-                    type="checkbox"
-                    id="wIncorrect"
-                    value="Incorrect fact"
-                  />
-
-                  <label for="wIncorrect">
-                    Incorrect fact
-                  </label>
-                </div>
-
-
-                <div class="weakness-tag">
-                  <input
-                    type="checkbox"
-                    id="wDepth"
-                    value="Insufficient depth"
-                  />
-
-                  <label for="wDepth">
-                    Insufficient depth
-                  </label>
-                </div>
-
-
-                <div class="weakness-tag">
-                  <input
-                    type="checkbox"
-                    id="wCommunication"
-                    value="Communication"
-                  />
-
-                  <label for="wCommunication">
-                    Communication
-                  </label>
-                </div>
-
-
-                <div class="weakness-tag">
-                  <input
-                    type="checkbox"
-                    id="wQuestion"
-                    value="Didn't answer question"
-                  />
-
-                  <label for="wQuestion">
-                    Didn't answer question
-                  </label>
-                </div>
-
+                <div class="weakness-tag"><input type="checkbox" id="wKnowledge" value="Knowledge gap" /><label for="wKnowledge">Knowledge gap</label></div>
+                <div class="weakness-tag"><input type="checkbox" id="wStructure" value="Poor structure" /><label for="wStructure">Poor structure</label></div>
+                <div class="weakness-tag"><input type="checkbox" id="wPrompting" value="Needed prompting" /><label for="wPrompting">Needed prompting</label></div>
+                <div class="weakness-tag"><input type="checkbox" id="wIncorrect" value="Incorrect fact" /><label for="wIncorrect">Incorrect fact</label></div>
+                <div class="weakness-tag"><input type="checkbox" id="wDepth" value="Insufficient depth" /><label for="wDepth">Insufficient depth</label></div>
+                <div class="weakness-tag"><input type="checkbox" id="wCommunication" value="Communication" /><label for="wCommunication">Communication</label></div>
+                <div class="weakness-tag"><input type="checkbox" id="wQuestion" value="Didn't answer question" /><label for="wQuestion">Didn't answer question</label></div>
               </div>
-
             </div>
 
-
             <div class="form-full">
-
-              <label for="revision">
-                What do I need to revise?
-              </label>
-
-              <textarea
-                id="revision"
-                placeholder="Key facts, concepts or skeleton to revisit"
-              ></textarea>
-
+              <label for="revision">What do I need to revise?</label>
+              <textarea id="revision" placeholder="Key facts, concepts or skeleton to revisit"></textarea>
             </div>
 
-
             <div class="form-full">
-
-              <label>
-                Schedule review
-              </label>
-
+              <label>Schedule review</label>
               <div class="quick-review-buttons">
-
-                <button
-                  type="button"
-                  onclick="setReviewOffset(1)"
-                >
-                  Tomorrow
-                </button>
-
-                <button
-                  type="button"
-                  onclick="setReviewOffset(3)"
-                >
-                  3 days
-                </button>
-
-                <button
-                  type="button"
-                  onclick="setReviewOffset(7)"
-                >
-                  1 week
-                </button>
-
-                <button
-                  type="button"
-                  onclick="setReviewOffset(14)"
-                >
-                  2 weeks
-                </button>
-
-                <button
-                  type="button"
-                  onclick="clearReviewDate()"
-                >
-                  No review
-                </button>
-
+                <button type="button" onclick="setReviewOffset(1)">Tomorrow</button>
+                <button type="button" onclick="setReviewOffset(3)">3 days</button>
+                <button type="button" onclick="setReviewOffset(7)">1 week</button>
+                <button type="button" onclick="setReviewOffset(14)">2 weeks</button>
+                <button type="button" onclick="clearReviewDate()">No review</button>
               </div>
-
             </div>
-
 
             <div>
-
-              <label for="reviewDate">
-                Review date
-              </label>
-
-              <input
-                type="date"
-                id="reviewDate"
-              />
-
+              <label for="reviewDate">Review date</label>
+              <input type="date" id="reviewDate" />
             </div>
-
           </div>
-
 
           <div class="form-actions">
-
-            <button
-              type="button"
-              class="button-secondary"
-              onclick="resetForm()"
-            >
-              Clear
-            </button>
-
-            <button
-              type="submit"
-              class="button-primary"
-            >
-              Save Viva
-            </button>
-
+            <button type="button" class="button-secondary" onclick="resetForm()">Clear</button>
+            <button type="submit" class="button-primary">Save Viva</button>
           </div>
-
         </form>
-
       </div>
-
     </section>
-
-
-    <!-- REVIEW QUEUE -->
 
     <section id="review" class="page">
-
       <div class="card">
-
         <h2>Review Queue</h2>
-
-        <p class="small-muted">
-          Vivas you've scheduled to revisit.
-        </p>
-
-        <div
-          id="reviewList"
-          class="viva-list"
-        ></div>
-
+        <p class="small-muted">Vivas you've scheduled to revisit.</p>
+        <div id="reviewList" class="viva-list"></div>
       </div>
-
     </section>
-
-
-    <!-- CALENDAR -->
 
     <section id="calendar" class="page">
-
       <div class="card">
-
         <div class="calendar-header">
-
-          <button
-            class="calendar-nav"
-            onclick="changeCalendarMonth(-1)"
-            aria-label="Previous month"
-          >
-            ‹
-          </button>
-
-          <div
-            id="calendarTitle"
-            class="calendar-title"
-          ></div>
-
-          <button
-            class="calendar-nav"
-            onclick="changeCalendarMonth(1)"
-            aria-label="Next month"
-          >
-            ›
-          </button>
-
+          <button class="calendar-nav" onclick="changeCalendarMonth(-1)" aria-label="Previous month">‹</button>
+          <div id="calendarTitle" class="calendar-title"></div>
+          <button class="calendar-nav" onclick="changeCalendarMonth(1)" aria-label="Next month">›</button>
         </div>
-
 
         <div class="calendar-legend">
-
-          <div class="legend-item">
-            <div class="legend-viva"></div>
-            <span>Vivas completed</span>
-          </div>
-
-          <div class="legend-item">
-            <div class="legend-review"></div>
-            <span>Review due</span>
-          </div>
-
+          <div class="legend-item"><div class="legend-viva"></div><span>Vivas completed</span></div>
+          <div class="legend-item"><div class="legend-review"></div><span>Review due</span></div>
         </div>
-
 
         <div class="calendar-weekdays">
-
-          <div class="calendar-weekday">Mon</div>
-          <div class="calendar-weekday">Tue</div>
-          <div class="calendar-weekday">Wed</div>
-          <div class="calendar-weekday">Thu</div>
-          <div class="calendar-weekday">Fri</div>
-          <div class="calendar-weekday">Sat</div>
-          <div class="calendar-weekday">Sun</div>
-
+          <div class="calendar-weekday">Mon</div><div class="calendar-weekday">Tue</div><div class="calendar-weekday">Wed</div><div class="calendar-weekday">Thu</div><div class="calendar-weekday">Fri</div><div class="calendar-weekday">Sat</div><div class="calendar-weekday">Sun</div>
         </div>
 
-
-        <div
-          id="calendarGrid"
-          class="calendar-grid"
-        ></div>
-
-
-        <div
-          id="calendarDayDetail"
-          class="calendar-day-detail"
-        ></div>
-
+        <div id="calendarGrid" class="calendar-grid"></div>
+        <div id="calendarDayDetail" class="calendar-day-detail"></div>
       </div>
-
     </section>
-
-
-    <!-- HISTORY -->
 
     <section id="history" class="page">
-
       <div class="card">
-
         <div class="section-heading">
-
           <h2>Viva History</h2>
-
           <div class="backup-row">
-
-            <button
-              class="button-secondary"
-              onclick="exportData()"
-            >
-              Export backup
-            </button>
-
-            <button
-              class="button-secondary"
-              onclick="document.getElementById('importFile').click()"
-            >
-              Import backup
-            </button>
-
-            <input
-              type="file"
-              id="importFile"
-              class="file-input"
-              accept=".json,application/json"
-              onchange="importData(event)"
-            />
-
+            <button class="button-secondary" onclick="exportData()">Export backup</button>
+            <button class="button-secondary" onclick="document.getElementById('importFile').click()">Import backup</button>
+            <input type="file" id="importFile" class="file-input" accept=".json,application/json" onchange="importData(event)" />
           </div>
-
         </div>
-
 
         <div class="search-bar">
-
-          <input
-            id="searchInput"
-            type="search"
-            placeholder="Search topics, questions or feedback..."
-            oninput="renderHistory()"
-          />
-
+          <input id="searchInput" type="search" placeholder="Search topics, questions or feedback..." oninput="renderHistory()" />
         </div>
-
-
-        <div
-          id="historyList"
-          class="viva-list"
-        ></div>
-
+        <div id="historyList" class="viva-list"></div>
       </div>
-
     </section>
-
-
-    <!-- STATS -->
 
     <section id="stats" class="page">
-
-      <div class="card">
-
-        <h2>Performance</h2>
-
-        <div id="performanceStats"></div>
-
-      </div>
-
-
-      <div class="card">
-
-        <h2>Vivas by area</h2>
-
-        <div id="topicStats"></div>
-
-      </div>
-
-
-      <div class="card">
-
-        <h2>Most common weaknesses</h2>
-
-        <div id="weaknessStats"></div>
-
-      </div>
-
+      <div class="card"><h2>Performance</h2><div id="performanceStats"></div></div>
+      <div class="card"><h2>Vivas by area</h2><div id="topicStats"></div></div>
+      <div class="card"><h2>Most common weaknesses</h2><div id="weaknessStats"></div></div>
     </section>
-
   </main>
 
-
   <script>
+    const VIVA_DATE = "2026-10-18";
 
-    /* ---------------------------
-       DATA
-    ---------------------------- */
-
-    let vivas =
-      JSON.parse(localStorage.getItem("primaryVivas")) || [];
-
-    let settings =
-      JSON.parse(localStorage.getItem("primaryVivaSettings")) || {
-        dailyGoal: 2
-      };
-
+    let vivas = JSON.parse(localStorage.getItem("primaryVivas")) || [];
+    let settings = JSON.parse(localStorage.getItem("primaryVivaSettings")) || { dailyGoal: 2 };
     let calendarDate = new Date();
     calendarDate.setDate(1);
-
     let selectedCalendarDate = todayString();
 
-
-    function saveData() {
-      localStorage.setItem(
-        "primaryVivas",
-        JSON.stringify(vivas)
-      );
-    }
-
-
-    function saveSettings() {
-      localStorage.setItem(
-        "primaryVivaSettings",
-        JSON.stringify(settings)
-      );
-    }
-
-
-    /* ---------------------------
-       DATE HELPERS
-    ---------------------------- */
+    function saveData() { localStorage.setItem("primaryVivas", JSON.stringify(vivas)); }
+    function saveSettings() { localStorage.setItem("primaryVivaSettings", JSON.stringify(settings)); }
 
     function dateToYMD(date) {
-
       const year = date.getFullYear();
-
-      const month =
-        String(date.getMonth() + 1).padStart(2, "0");
-
-      const day =
-        String(date.getDate()).padStart(2, "0");
-
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     }
 
-
-    function todayString() {
-      return dateToYMD(new Date());
-    }
-
+    function todayString() { return dateToYMD(new Date()); }
 
     function parseLocalDate(dateString) {
-
-      const [year, month, day] =
-        dateString.split("-").map(Number);
-
-      return new Date(
-        year,
-        month - 1,
-        day
-      );
+      const [year, month, day] = dateString.split("-").map(Number);
+      return new Date(year, month - 1, day);
     }
 
-
     function addDays(dateString, days) {
-
-      const date =
-        parseLocalDate(dateString);
-
-      date.setDate(
-        date.getDate() + days
-      );
-
+      const date = parseLocalDate(dateString);
+      date.setDate(date.getDate() + days);
       return dateToYMD(date);
     }
 
-
     function formatDate(dateString) {
-
-      if (!dateString) {
-        return "";
-      }
-
-      const date =
-        parseLocalDate(dateString);
-
-      return date.toLocaleDateString(
-        "en-AU",
-        {
-          day: "numeric",
-          month: "short",
-          year: "numeric"
-        }
-      );
+      if (!dateString) return "";
+      return parseLocalDate(dateString).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" });
     }
-
 
     function weekdayShort(dateString) {
-
-      return parseLocalDate(dateString)
-        .toLocaleDateString(
-          "en-AU",
-          {
-            weekday: "short"
-          }
-        )
-        .slice(0, 1);
+      return parseLocalDate(dateString).toLocaleDateString("en-AU", { weekday: "short" }).slice(0, 1);
     }
 
-
-    /* ---------------------------
-       NAVIGATION
-    ---------------------------- */
-
     function showPage(pageName, button) {
-
-      document
-        .querySelectorAll(".page")
-        .forEach(page => {
-          page.classList.remove("active");
-        });
-
-      document
-        .getElementById(pageName)
-        .classList.add("active");
-
-      document
-        .querySelectorAll(".nav button")
-        .forEach(btn => {
-          btn.classList.remove("active");
-        });
-
-      if (button) {
-        button.classList.add("active");
-      }
-
+      document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+      document.getElementById(pageName).classList.add("active");
+      document.querySelectorAll(".nav button").forEach(btn => btn.classList.remove("active"));
+      if (button) button.classList.add("active");
       refreshAll();
     }
 
-
     function showPageByName(pageName) {
-
-      const button =
-        document.querySelector(
-          `.nav button[data-page="${pageName}"]`
-        );
-
-      showPage(
-        pageName,
-        button
-      );
+      const button = document.querySelector(`.nav button[data-page="${pageName}"]`);
+      showPage(pageName, button);
     }
 
-
     function openNewViva() {
-
       resetForm();
-
       showPageByName("log");
     }
 
-
-    /* ---------------------------
-       FORM
-    ---------------------------- */
-
     function resetForm() {
-
-      document
-        .getElementById("vivaForm")
-        .reset();
-
-      document
-        .getElementById("editId")
-        .value = "";
-
-      document
-        .getElementById("formTitle")
-        .textContent = "Log a viva";
-
-      document
-        .getElementById("date")
-        .value = todayString();
-
-      document
-        .getElementById("reviewDate")
-        .value = "";
+      document.getElementById("vivaForm").reset();
+      document.getElementById("editId").value = "";
+      document.getElementById("formTitle").textContent = "Full viva log";
+      document.getElementById("date").value = todayString();
+      document.getElementById("reviewDate").value = "";
     }
-
 
     function setReviewOffset(days) {
-
-      const vivaDate =
-        document
-          .getElementById("date")
-          .value || todayString();
-
-      document
-        .getElementById("reviewDate")
-        .value =
-          addDays(
-            vivaDate,
-            days
-          );
+      const vivaDate = document.getElementById("date").value || todayString();
+      document.getElementById("reviewDate").value = addDays(vivaDate, days);
     }
 
+    function clearReviewDate() { document.getElementById("reviewDate").value = ""; }
 
-    function clearReviewDate() {
+    document.getElementById("quickLogForm").addEventListener("submit", function(event) {
+      event.preventDefault();
 
-      document
-        .getElementById("reviewDate")
-        .value = "";
-    }
+      const category = document.getElementById("quickCategory").value;
+      const topic = document.getElementById("quickTopic").value.trim();
+      if (!category || !topic) return;
 
+      vivas.push({
+        id: Date.now().toString(),
+        date: todayString(),
+        type: document.getElementById("quickType").value,
+        category,
+        topic,
+        rating: "Unrated",
+        questions: "",
+        feedback: "",
+        weaknesses: [],
+        revision: "",
+        reviewDate: ""
+      });
 
-    document
-      .getElementById("vivaForm")
-      .addEventListener(
-        "submit",
-        function(event) {
+      saveData();
+      document.getElementById("quickTopic").value = "";
+      refreshAll();
+      document.getElementById("quickTopic").focus();
+    });
 
-          event.preventDefault();
+    document.getElementById("vivaForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const ratingElement = document.querySelector('input[name="rating"]:checked');
+      const weaknesses = Array.from(document.querySelectorAll(".weakness-tag input:checked")).map(item => item.value);
 
-          const ratingElement =
-            document.querySelector(
-              'input[name="rating"]:checked'
-            );
+      const viva = {
+        id: document.getElementById("editId").value || Date.now().toString(),
+        date: document.getElementById("date").value,
+        type: document.getElementById("type").value,
+        category: document.getElementById("category").value,
+        topic: document.getElementById("topic").value.trim(),
+        rating: ratingElement ? ratingElement.value : "Unrated",
+        questions: document.getElementById("questions").value.trim(),
+        feedback: document.getElementById("feedback").value.trim(),
+        weaknesses,
+        revision: document.getElementById("revision").value.trim(),
+        reviewDate: document.getElementById("reviewDate").value
+      };
 
-          if (!ratingElement) {
+      const existingIndex = vivas.findIndex(item => item.id === viva.id);
+      if (existingIndex >= 0) vivas[existingIndex] = viva;
+      else vivas.push(viva);
 
-            alert(
-              "Please choose a performance rating."
-            );
-
-            return;
-          }
-
-
-          const weaknesses =
-            Array.from(
-              document.querySelectorAll(
-                ".weakness-tag input:checked"
-              )
-            )
-            .map(
-              item => item.value
-            );
-
-
-          const viva = {
-
-            id:
-              document
-                .getElementById("editId")
-                .value ||
-              Date.now().toString(),
-
-            date:
-              document
-                .getElementById("date")
-                .value,
-
-            type:
-              document
-                .getElementById("type")
-                .value,
-
-            category:
-              document
-                .getElementById("category")
-                .value,
-
-            topic:
-              document
-                .getElementById("topic")
-                .value
-                .trim(),
-
-            rating:
-              ratingElement.value,
-
-            questions:
-              document
-                .getElementById("questions")
-                .value
-                .trim(),
-
-            feedback:
-              document
-                .getElementById("feedback")
-                .value
-                .trim(),
-
-            weaknesses,
-
-            revision:
-              document
-                .getElementById("revision")
-                .value
-                .trim(),
-
-            reviewDate:
-              document
-                .getElementById("reviewDate")
-                .value
-
-          };
-
-
-          const existingIndex =
-            vivas.findIndex(
-              item =>
-                item.id === viva.id
-            );
-
-
-          if (existingIndex >= 0) {
-
-            vivas[existingIndex] =
-              viva;
-
-          } else {
-
-            vivas.push(viva);
-
-          }
-
-
-          saveData();
-
-          resetForm();
-
-          refreshAll();
-
-          showPageByName(
-            "dashboard"
-          );
-
-        }
-      );
-
-
-    /* ---------------------------
-       DAILY GOAL + STREAK
-    ---------------------------- */
+      saveData();
+      resetForm();
+      refreshAll();
+      showPageByName("dashboard");
+    });
 
     function saveDailyGoal() {
-
-      let goal =
-        Number(
-          document
-            .getElementById("dailyGoalInput")
-            .value
-        );
-
-      if (!Number.isFinite(goal)) {
-        goal = 1;
-      }
-
-      goal =
-        Math.max(
-          1,
-          Math.min(
-            20,
-            Math.round(goal)
-          )
-        );
-
-      settings.dailyGoal =
-        goal;
-
+      let goal = Number(document.getElementById("dailyGoalInput").value);
+      if (!Number.isFinite(goal)) goal = 1;
+      goal = Math.max(1, Math.min(20, Math.round(goal)));
+      settings.dailyGoal = goal;
       saveSettings();
-
-      document
-        .getElementById("dailyGoalInput")
-        .value = goal;
-
+      document.getElementById("dailyGoalInput").value = goal;
       refreshAll();
     }
 
-
-    function getCountForDate(dateString) {
-
-      return vivas.filter(
-        viva =>
-          viva.date === dateString
-      ).length;
-    }
-
+    function getCountForDate(dateString) { return vivas.filter(viva => viva.date === dateString).length; }
 
     function calculateStreak() {
-
-      const goal =
-        settings.dailyGoal || 1;
-
-      const today =
-        todayString();
-
-      let date =
-        parseLocalDate(today);
-
-      /*
-        If today's goal has not yet been met,
-        the current streak is allowed to continue
-        through yesterday.
-      */
-
-      if (
-        getCountForDate(today) <
-        goal
-      ) {
-
-        date.setDate(
-          date.getDate() - 1
-        );
-      }
-
+      const goal = settings.dailyGoal || 1;
+      const today = todayString();
+      let date = parseLocalDate(today);
+      if (getCountForDate(today) < goal) date.setDate(date.getDate() - 1);
 
       let streak = 0;
-
-
       while (true) {
-
-        const dateString =
-          dateToYMD(date);
-
-        const count =
-          getCountForDate(
-            dateString
-          );
-
-        if (count < goal) {
-          break;
-        }
-
+        const dateString = dateToYMD(date);
+        if (getCountForDate(dateString) < goal) break;
         streak++;
-
-        date.setDate(
-          date.getDate() - 1
-        );
+        date.setDate(date.getDate() - 1);
       }
-
-
       return streak;
     }
 
+    function renderCountdown() {
+      const today = parseLocalDate(todayString());
+      const exam = parseLocalDate(VIVA_DATE);
+      const msPerDay = 24 * 60 * 60 * 1000;
+      const days = Math.round((exam - today) / msPerDay);
+
+      const numberEl = document.getElementById("countdownDays");
+      const textEl = document.getElementById("countdownText");
+
+      if (days > 0) {
+        const weeks = Math.floor(days / 7);
+        const remainder = days % 7;
+        numberEl.textContent = days;
+        textEl.textContent = `${weeks} week${weeks === 1 ? "" : "s"} + ${remainder} day${remainder === 1 ? "" : "s"} to go`;
+      } else if (days === 0) {
+        numberEl.textContent = "Today";
+        textEl.textContent = "Viva day — go get it.";
+      } else {
+        numberEl.textContent = "✓";
+        textEl.textContent = "Viva date has passed";
+      }
+    }
 
     function renderStreak() {
+      const goal = settings.dailyGoal || 1;
+      document.getElementById("dailyGoalInput").value = goal;
+      const todayCount = getCountForDate(todayString());
+      const streak = calculateStreak();
 
-      const goal =
-        settings.dailyGoal || 1;
-
-      document
-        .getElementById("dailyGoalInput")
-        .value = goal;
-
-
-      const today =
-        todayString();
-
-      const todayCount =
-        getCountForDate(today);
-
-      const streak =
-        calculateStreak();
-
-
-      document
-        .getElementById("streakNumber")
-        .textContent = streak;
-
-
-      document
-        .getElementById("streakText")
-        .textContent =
-          streak === 1
-            ? "day"
-            : "days";
-
-
-      document
-        .getElementById("todayGoalText")
-        .textContent =
-          `${todayCount} / ${goal} vivas`;
-
-
-      const progress =
-        Math.min(
-          100,
-          (todayCount / goal) * 100
-        );
-
-
-      document
-        .getElementById("todayGoalProgress")
-        .style.width =
-          `${progress}%`;
-
-
+      document.getElementById("streakNumber").textContent = streak;
+      document.getElementById("streakText").textContent = streak === 1 ? "day" : "days";
+      document.getElementById("todayGoalText").textContent = `${todayCount} / ${goal} vivas`;
+      document.getElementById("todayGoalProgress").style.width = `${Math.min(100, (todayCount / goal) * 100)}%`;
       renderWeekStrip();
-
     }
-
 
     function renderWeekStrip() {
-
-      const goal =
-        settings.dailyGoal || 1;
-
-      const today =
-        parseLocalDate(
-          todayString()
-        );
-
+      const goal = settings.dailyGoal || 1;
+      const today = parseLocalDate(todayString());
       const days = [];
-
       let weekTotal = 0;
 
-
-      for (
-        let offset = 6;
-        offset >= 0;
-        offset--
-      ) {
-
-        const date =
-          new Date(today);
-
-        date.setDate(
-          today.getDate() - offset
-        );
-
-        const dateString =
-          dateToYMD(date);
-
-        const count =
-          getCountForDate(
-            dateString
-          );
-
+      for (let offset = 6; offset >= 0; offset--) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - offset);
+        const dateString = dateToYMD(date);
+        const count = getCountForDate(dateString);
         weekTotal += count;
 
+        let circleClass = "week-circle";
+        if (count >= goal) circleClass += " hit-goal";
+        else if (count > 0) circleClass += " some";
 
-        let circleClass =
-          "week-circle";
-
-        if (count >= goal) {
-
-          circleClass +=
-            " hit-goal";
-
-        } else if (count > 0) {
-
-          circleClass +=
-            " some";
-
-        }
-
-
-        days.push(`
-          <div class="week-day">
-
-            <div class="week-day-name">
-              ${weekdayShort(dateString)}
-            </div>
-
-            <div class="${circleClass}">
-              ${count}
-            </div>
-
-          </div>
-        `);
-
+        days.push(`<div class="week-day"><div class="week-day-name">${weekdayShort(dateString)}</div><div class="${circleClass}">${count}</div></div>`);
       }
 
-
-      document
-        .getElementById("weekTotal")
-        .textContent =
-          weekTotal;
-
-
-      document
-        .getElementById("weekStrip")
-        .innerHTML =
-          days.join("");
-
+      document.getElementById("weekTotal").textContent = weekTotal;
+      document.getElementById("weekStrip").innerHTML = days.join("");
     }
-
-
-    /* ---------------------------
-       VIVA DISPLAY
-    ---------------------------- */
 
     function ratingClass(rating) {
-
-      if (rating === "Strong") {
-        return "rating-good";
-      }
-
-      if (rating === "Okay") {
-        return "rating-okay";
-      }
-
-      return "rating-weak";
+      if (rating === "Strong") return "rating-good";
+      if (rating === "Okay") return "rating-okay";
+      if (rating === "Needs work") return "rating-weak";
+      return "rating-unrated";
     }
-
 
     function escapeHTML(value) {
-
-      if (!value) {
-        return "";
-      }
-
+      if (!value) return "";
       return String(value)
-
-        .replaceAll(
-          "&",
-          "&amp;"
-        )
-
-        .replaceAll(
-          "<",
-          "&lt;"
-        )
-
-        .replaceAll(
-          ">",
-          "&gt;"
-        )
-
-        .replaceAll(
-          '"',
-          "&quot;"
-        )
-
-        .replaceAll(
-          "'",
-          "&#039;"
-        );
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
 
+    function renderViva(viva, reviewMode = false) {
+      const weaknesses = viva.weaknesses && viva.weaknesses.length
+        ? viva.weaknesses.map(tag => `<span class="tag">${escapeHTML(tag)}</span>`).join("")
+        : "";
 
-    function renderViva(
-      viva,
-      reviewMode = false
-    ) {
-
-      const weaknesses =
-        viva.weaknesses &&
-        viva.weaknesses.length
-
-          ? viva.weaknesses
-              .map(
-                tag =>
-                  `<span class="tag">${escapeHTML(tag)}</span>`
-              )
-              .join("")
-
-          : "";
-
-
-      const today =
-        todayString();
-
-
-      let reviewClass =
-        "";
-
-
-      if (
-        reviewMode &&
-        viva.reviewDate
-      ) {
-
-        reviewClass =
-          viva.reviewDate <= today
-            ? "review-due"
-            : "review-upcoming";
-
-      }
-
+      let reviewClass = "";
+      if (reviewMode && viva.reviewDate) reviewClass = viva.reviewDate <= todayString() ? "review-due" : "review-upcoming";
+      const rating = viva.rating || "Unrated";
 
       return `
-
         <div class="viva-row ${reviewClass}">
-
           <div class="viva-row-top">
-
             <div>
-
-              <div class="viva-title">
-                ${escapeHTML(viva.topic)}
-              </div>
-
-              <div class="viva-meta">
-
-                ${formatDate(viva.date)}
-
-                · ${escapeHTML(viva.type)}
-
-                ${
-                  viva.category
-                    ? " · " +
-                      escapeHTML(
-                        viva.category
-                      )
-                    : ""
-                }
-
-              </div>
-
+              <div class="viva-title">${escapeHTML(viva.topic)}</div>
+              <div class="viva-meta">${formatDate(viva.date)} · ${escapeHTML(viva.type)}${viva.category ? " · " + escapeHTML(viva.category) : ""}</div>
             </div>
-
-
-            <span
-              class="rating-badge ${ratingClass(viva.rating)}"
-            >
-              ${escapeHTML(viva.rating)}
-            </span>
-
+            <span class="rating-badge ${ratingClass(rating)}">${escapeHTML(rating)}</span>
           </div>
-
 
           <div class="viva-details">
-
-            ${
-              viva.questions
-
-                ? `
-                  <div>
-                    <span class="detail-label">
-                      Questions:
-                    </span>
-
-                    ${escapeHTML(viva.questions)}
-                  </div>
-                `
-
-                : ""
-            }
-
-
-            ${
-              viva.feedback
-
-                ? `
-                  <div>
-                    <span class="detail-label">
-                      Feedback:
-                    </span>
-
-                    ${escapeHTML(viva.feedback)}
-                  </div>
-                `
-
-                : ""
-            }
-
-
-            ${
-              viva.revision
-
-                ? `
-                  <div>
-                    <span class="detail-label">
-                      Revise:
-                    </span>
-
-                    ${escapeHTML(viva.revision)}
-                  </div>
-                `
-
-                : ""
-            }
-
-
-            ${
-              viva.reviewDate
-
-                ? `
-                  <div>
-                    <span class="detail-label">
-                      Review:
-                    </span>
-
-                    ${formatDate(viva.reviewDate)}
-                  </div>
-                `
-
-                : ""
-            }
-
-
-            ${
-              weaknesses
-
-                ? `
-                  <div style="margin-top:7px">
-                    ${weaknesses}
-                  </div>
-                `
-
-                : ""
-            }
-
+            ${viva.questions ? `<div><span class="detail-label">Questions:</span> ${escapeHTML(viva.questions)}</div>` : ""}
+            ${viva.feedback ? `<div><span class="detail-label">Feedback:</span> ${escapeHTML(viva.feedback)}</div>` : ""}
+            ${viva.revision ? `<div><span class="detail-label">Revise:</span> ${escapeHTML(viva.revision)}</div>` : ""}
+            ${viva.reviewDate ? `<div><span class="detail-label">Review:</span> ${formatDate(viva.reviewDate)}</div>` : ""}
+            ${weaknesses ? `<div style="margin-top:7px">${weaknesses}</div>` : ""}
           </div>
-
 
           <div class="row-actions">
-
-            <button
-              class="button-secondary"
-              onclick="editViva('${viva.id}')"
-            >
-              Edit
-            </button>
-
-            <button
-              class="button-danger"
-              onclick="deleteViva('${viva.id}')"
-            >
-              Delete
-            </button>
-
+            <button class="button-secondary" onclick="editViva('${viva.id}')">Edit</button>
+            <button class="button-danger" onclick="deleteViva('${viva.id}')">Delete</button>
           </div>
-
-        </div>
-
-      `;
-
+        </div>`;
     }
-
 
     function editViva(id) {
+      const viva = vivas.find(item => item.id === id);
+      if (!viva) return;
 
-      const viva =
-        vivas.find(
-          item =>
-            item.id === id
-        );
+      showPageByName("log");
+      document.getElementById("formTitle").textContent = "Edit viva";
+      document.getElementById("editId").value = viva.id;
+      document.getElementById("date").value = viva.date;
+      document.getElementById("type").value = viva.type;
+      document.getElementById("category").value = viva.category || "";
+      document.getElementById("topic").value = viva.topic || "";
+      document.getElementById("questions").value = viva.questions || "";
+      document.getElementById("feedback").value = viva.feedback || "";
+      document.getElementById("revision").value = viva.revision || "";
+      document.getElementById("reviewDate").value = viva.reviewDate || "";
 
-      if (!viva) {
-        return;
+      document.querySelectorAll('input[name="rating"]').forEach(input => input.checked = false);
+      if (viva.rating && viva.rating !== "Unrated") {
+        const rating = document.querySelector(`input[name="rating"][value="${viva.rating}"]`);
+        if (rating) rating.checked = true;
       }
 
-
-      showPageByName(
-        "log"
-      );
-
-
-      document
-        .getElementById("formTitle")
-        .textContent =
-          "Edit viva";
-
-
-      document
-        .getElementById("editId")
-        .value =
-          viva.id;
-
-
-      document
-        .getElementById("date")
-        .value =
-          viva.date;
-
-
-      document
-        .getElementById("type")
-        .value =
-          viva.type;
-
-
-      document
-        .getElementById("category")
-        .value =
-          viva.category || "";
-
-
-      document
-        .getElementById("topic")
-        .value =
-          viva.topic || "";
-
-
-      document
-        .getElementById("questions")
-        .value =
-          viva.questions || "";
-
-
-      document
-        .getElementById("feedback")
-        .value =
-          viva.feedback || "";
-
-
-      document
-        .getElementById("revision")
-        .value =
-          viva.revision || "";
-
-
-      document
-        .getElementById("reviewDate")
-        .value =
-          viva.reviewDate || "";
-
-
-      const rating =
-        document.querySelector(
-          `input[name="rating"][value="${viva.rating}"]`
-        );
-
-
-      if (rating) {
-        rating.checked = true;
-      }
-
-
-      document
-        .querySelectorAll(
-          ".weakness-tag input"
-        )
-        .forEach(
-          input => {
-
-            input.checked =
-              (
-                viva.weaknesses ||
-                []
-              )
-              .includes(
-                input.value
-              );
-
-          }
-        );
-
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
+      document.querySelectorAll(".weakness-tag input").forEach(input => {
+        input.checked = (viva.weaknesses || []).includes(input.value);
       });
 
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-
     function deleteViva(id) {
-
-      if (
-        !confirm(
-          "Delete this viva?"
-        )
-      ) {
-        return;
-      }
-
-
-      vivas =
-        vivas.filter(
-          item =>
-            item.id !== id
-        );
-
-
+      if (!confirm("Delete this viva?")) return;
+      vivas = vivas.filter(item => item.id !== id);
       saveData();
-
       refreshAll();
     }
 
-
-    /* ---------------------------
-       DASHBOARD
-    ---------------------------- */
-
     function renderDashboard() {
-
+      renderCountdown();
       renderStreak();
+      document.getElementById("totalVivas").textContent = vivas.length;
 
+      const today = parseLocalDate(todayString());
+      const sevenDaysAgo = new Date(today);
+      sevenDaysAgo.setDate(today.getDate() - 6);
+      const recentCount = vivas.filter(viva => parseLocalDate(viva.date) >= sevenDaysAgo).length;
 
-      document
-        .getElementById("totalVivas")
-        .textContent =
-          vivas.length;
+      document.getElementById("recentVivas").textContent = recentCount;
+      document.getElementById("weakVivas").textContent = vivas.filter(viva => viva.rating === "Needs work").length;
 
+      const due = vivas
+        .filter(viva => viva.reviewDate && viva.reviewDate <= todayString())
+        .sort((a, b) => a.reviewDate.localeCompare(b.reviewDate));
 
-      const today =
-        parseLocalDate(
-          todayString()
-        );
+      document.getElementById("dueReviews").textContent = due.length;
+      document.getElementById("dashboardReviewList").innerHTML = due.length
+        ? due.slice(0, 4).map(viva => renderViva(viva, true)).join("")
+        : `<div class="empty-state">Nothing due today 🎉</div>`;
 
-
-      const sevenDaysAgo =
-        new Date(today);
-
-      sevenDaysAgo.setDate(
-        today.getDate() - 6
-      );
-
-
-      const recentCount =
-        vivas.filter(
-          viva => {
-
-            const vivaDate =
-              parseLocalDate(
-                viva.date
-              );
-
-            return (
-              vivaDate >=
-              sevenDaysAgo
-            );
-
-          }
-        ).length;
-
-
-      document
-        .getElementById("recentVivas")
-        .textContent =
-          recentCount;
-
-
-      document
-        .getElementById("weakVivas")
-        .textContent =
-          vivas.filter(
-            viva =>
-              viva.rating ===
-              "Needs work"
-          ).length;
-
-
-      const todayText =
-        todayString();
-
-
-      const due =
-        vivas
-
-          .filter(
-            viva =>
-              viva.reviewDate &&
-              viva.reviewDate <=
-                todayText
-          )
-
-          .sort(
-            (a, b) =>
-              a.reviewDate
-                .localeCompare(
-                  b.reviewDate
-                )
-          );
-
-
-      document
-        .getElementById("dueReviews")
-        .textContent =
-          due.length;
-
-
-      const dashboardReview =
-        document
-          .getElementById(
-            "dashboardReviewList"
-          );
-
-
-      if (!due.length) {
-
-        dashboardReview.innerHTML =
-          `
-            <div class="empty-state">
-              Nothing due today 🎉
-            </div>
-          `;
-
-      } else {
-
-        dashboardReview.innerHTML =
-          due
-
-            .slice(
-              0,
-              4
-            )
-
-            .map(
-              viva =>
-                renderViva(
-                  viva,
-                  true
-                )
-            )
-
-            .join("");
-
-      }
-
-
-      const recent =
-        [...vivas]
-
-          .sort(
-            (a, b) =>
-              b.date.localeCompare(
-                a.date
-              )
-          )
-
-          .slice(
-            0,
-            5
-          );
-
-
-      document
-        .getElementById("recentList")
-        .innerHTML =
-
-          recent.length
-
-            ? recent
-                .map(
-                  viva =>
-                    renderViva(
-                      viva
-                    )
-                )
-                .join("")
-
-            : `
-                <div class="empty-state">
-                  No vivas logged yet.
-                  Your first one will appear here.
-                </div>
-              `;
-
+      const recent = [...vivas].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
+      document.getElementById("recentList").innerHTML = recent.length
+        ? recent.map(viva => renderViva(viva)).join("")
+        : `<div class="empty-state">No vivas logged yet. Your first one will appear here.</div>`;
     }
 
-
-    /* ---------------------------
-       REVIEW QUEUE
-    ---------------------------- */
-
     function renderReviewQueue() {
-
-      const today =
-        todayString();
-
-
-      const reviews =
-        vivas
-
-          .filter(
-            viva =>
-              viva.reviewDate
-          )
-
-          .sort(
-            (a, b) =>
-              a.reviewDate
-                .localeCompare(
-                  b.reviewDate
-                )
-          );
-
-
-      const list =
-        document
-          .getElementById(
-            "reviewList"
-          );
-
-
+      const reviews = vivas.filter(viva => viva.reviewDate).sort((a, b) => a.reviewDate.localeCompare(b.reviewDate));
+      const list = document.getElementById("reviewList");
       if (!reviews.length) {
-
-        list.innerHTML =
-          `
-            <div class="empty-state">
-              No vivas currently scheduled
-              for review.
-            </div>
-          `;
-
+        list.innerHTML = `<div class="empty-state">No vivas currently scheduled for review.</div>`;
         return;
       }
 
-
-      const overdue =
-        reviews.filter(
-          viva =>
-            viva.reviewDate <= today
-        );
-
-
-      const upcoming =
-        reviews.filter(
-          viva =>
-            viva.reviewDate > today
-        );
-
-
+      const overdue = reviews.filter(viva => viva.reviewDate <= todayString());
+      const upcoming = reviews.filter(viva => viva.reviewDate > todayString());
       let html = "";
-
-
-      if (overdue.length) {
-
-        html += `
-          <div
-            class="small-muted"
-            style="
-              margin:5px 0 10px;
-              font-weight:700;
-            "
-          >
-            DUE NOW
-          </div>
-        `;
-
-
-        html +=
-          overdue
-
-            .map(
-              viva =>
-                renderViva(
-                  viva,
-                  true
-                )
-            )
-
-            .join("");
-
-      }
-
-
-      if (upcoming.length) {
-
-        html += `
-          <div
-            class="small-muted"
-            style="
-              margin:22px 0 10px;
-              font-weight:700;
-            "
-          >
-            UPCOMING
-          </div>
-        `;
-
-
-        html +=
-          upcoming
-
-            .map(
-              viva =>
-                renderViva(
-                  viva,
-                  true
-                )
-            )
-
-            .join("");
-
-      }
-
-
-      list.innerHTML =
-        html;
+      if (overdue.length) html += `<div class="small-muted" style="margin:5px 0 10px;font-weight:800;">DUE NOW</div>${overdue.map(viva => renderViva(viva, true)).join("")}`;
+      if (upcoming.length) html += `<div class="small-muted" style="margin:22px 0 10px;font-weight:800;">UPCOMING</div>${upcoming.map(viva => renderViva(viva, true)).join("")}`;
+      list.innerHTML = html;
     }
-
-
-    /* ---------------------------
-       CALENDAR
-    ---------------------------- */
 
     function changeCalendarMonth(amount) {
-
-      calendarDate.setMonth(
-        calendarDate.getMonth() +
-        amount
-      );
-
-      selectedCalendarDate =
-        "";
-
+      calendarDate.setMonth(calendarDate.getMonth() + amount);
+      selectedCalendarDate = "";
       renderCalendar();
     }
 
-
-    function selectCalendarDay(
-      dateString
-    ) {
-
-      selectedCalendarDate =
-        dateString;
-
+    function selectCalendarDay(dateString) {
+      selectedCalendarDate = dateString;
       renderCalendar();
     }
-
 
     function renderCalendar() {
+      const year = calendarDate.getFullYear();
+      const month = calendarDate.getMonth();
+      document.getElementById("calendarTitle").textContent = calendarDate.toLocaleDateString("en-AU", { month: "long", year: "numeric" });
 
-      const year =
-        calendarDate.getFullYear();
-
-      const month =
-        calendarDate.getMonth();
-
-
-      document
-        .getElementById(
-          "calendarTitle"
-        )
-        .textContent =
-
-          calendarDate
-            .toLocaleDateString(
-              "en-AU",
-              {
-                month: "long",
-                year: "numeric"
-              }
-            );
-
-
-      const firstDay =
-        new Date(
-          year,
-          month,
-          1
-        );
-
-
-      const daysInMonth =
-        new Date(
-          year,
-          month + 1,
-          0
-        )
-        .getDate();
-
-
-      /*
-        JS Sunday = 0.
-        Convert so Monday = 0.
-      */
-
-      const leadingBlanks =
-        (
-          firstDay.getDay() +
-          6
-        ) % 7;
-
-
+      const firstDay = new Date(year, month, 1);
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const leadingBlanks = (firstDay.getDay() + 6) % 7;
       let html = "";
 
+      for (let i = 0; i < leadingBlanks; i++) html += `<div class="calendar-cell empty"></div>`;
 
-      for (
-        let i = 0;
-        i < leadingBlanks;
-        i++
-      ) {
-
-        html +=
-          `
-            <div
-              class="calendar-cell empty"
-            ></div>
-          `;
-
-      }
-
-
-      const today =
-        todayString();
-
-
-      for (
-        let day = 1;
-        day <= daysInMonth;
-        day++
-      ) {
-
-        const date =
-          new Date(
-            year,
-            month,
-            day
-          );
-
-
-        const dateString =
-          dateToYMD(
-            date
-          );
-
-
-        const vivaCount =
-          getCountForDate(
-            dateString
-          );
-
-
-        const reviewCount =
-          vivas.filter(
-            viva =>
-              viva.reviewDate ===
-              dateString
-          ).length;
-
-
-        let classes =
-          "calendar-cell";
-
-
-        if (
-          dateString === today
-        ) {
-
-          classes +=
-            " today";
-
-        }
-
-
-        if (
-          dateString ===
-          selectedCalendarDate
-        ) {
-
-          classes +=
-            " selected";
-
-        }
-
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateString = dateToYMD(new Date(year, month, day));
+        const vivaCount = getCountForDate(dateString);
+        const reviewCount = vivas.filter(viva => viva.reviewDate === dateString).length;
+        let classes = "calendar-cell";
+        if (dateString === todayString()) classes += " today";
+        if (dateString === selectedCalendarDate) classes += " selected";
 
         html += `
-
-          <button
-            class="${classes}"
-            onclick="selectCalendarDay('${dateString}')"
-          >
-
-            <div class="calendar-day-number">
-              ${day}
-            </div>
-
-            ${
-              vivaCount > 0
-
-                ? `
-                  <div class="calendar-viva-count">
-                    ${vivaCount}
-                  </div>
-                `
-
-                : ""
-            }
-
-            ${
-              reviewCount > 0
-
-                ? `
-                  <div
-                    class="calendar-review-dot"
-                    title="${reviewCount} review(s) due"
-                  ></div>
-                `
-
-                : ""
-            }
-
-          </button>
-
-        `;
-
+          <button class="${classes}" onclick="selectCalendarDay('${dateString}')">
+            <div class="calendar-day-number">${day}</div>
+            ${vivaCount > 0 ? `<div class="calendar-viva-count">${vivaCount}</div>` : ""}
+            ${reviewCount > 0 ? `<div class="calendar-review-dot" title="${reviewCount} review(s) due"></div>` : ""}
+          </button>`;
       }
 
-
-      document
-        .getElementById("calendarGrid")
-        .innerHTML =
-          html;
-
-
+      document.getElementById("calendarGrid").innerHTML = html;
       renderCalendarDayDetail();
     }
 
-
     function renderCalendarDayDetail() {
-
-      const container =
-        document
-          .getElementById(
-            "calendarDayDetail"
-          );
-
-
-      if (
-        !selectedCalendarDate
-      ) {
-
-        container.innerHTML =
-          `
-            <div class="empty-state">
-              Tap a day to see its vivas
-              and scheduled reviews.
-            </div>
-          `;
-
+      const container = document.getElementById("calendarDayDetail");
+      if (!selectedCalendarDate) {
+        container.innerHTML = `<div class="empty-state">Tap a day to see its vivas and scheduled reviews.</div>`;
         return;
       }
 
+      const dayVivas = vivas.filter(viva => viva.date === selectedCalendarDate);
+      const reviewsDue = vivas.filter(viva => viva.reviewDate === selectedCalendarDate);
+      let html = `<div class="calendar-detail-heading">${formatDate(selectedCalendarDate)}</div>`;
 
-      const dayVivas =
-        vivas.filter(
-          viva =>
-            viva.date ===
-            selectedCalendarDate
-        );
-
-
-      const reviewsDue =
-        vivas.filter(
-          viva =>
-            viva.reviewDate ===
-            selectedCalendarDate
-        );
-
-
-      let html = `
-
-        <div class="calendar-detail-heading">
-          ${formatDate(selectedCalendarDate)}
-        </div>
-
-      `;
-
-
-      if (
-        !dayVivas.length &&
-        !reviewsDue.length
-      ) {
-
-        html += `
-          <div class="empty-state">
-            Nothing recorded for this day.
-          </div>
-        `;
-
-        container.innerHTML =
-          html;
-
+      if (!dayVivas.length && !reviewsDue.length) {
+        container.innerHTML = html + `<div class="empty-state">Nothing recorded for this day.</div>`;
         return;
       }
 
-
-      if (dayVivas.length) {
-
-        html += `
-          <div
-            class="small-muted"
-            style="
-              font-weight:700;
-              margin-bottom:8px;
-            "
-          >
-            VIVAS COMPLETED
-          </div>
-        `;
-
-
-        html +=
-          dayVivas
-
-            .map(
-              viva =>
-                renderViva(
-                  viva
-                )
-            )
-
-            .join("");
-
-      }
-
-
-      if (reviewsDue.length) {
-
-        html += `
-          <div
-            class="small-muted"
-            style="
-              font-weight:700;
-              margin:20px 0 8px;
-            "
-          >
-            REVIEWS DUE
-          </div>
-        `;
-
-
-        html +=
-          reviewsDue
-
-            .map(
-              viva =>
-                renderViva(
-                  viva,
-                  true
-                )
-            )
-
-            .join("");
-
-      }
-
-
-      container.innerHTML =
-        html;
+      if (dayVivas.length) html += `<div class="small-muted" style="font-weight:800;margin-bottom:8px;">VIVAS COMPLETED</div>${dayVivas.map(viva => renderViva(viva)).join("")}`;
+      if (reviewsDue.length) html += `<div class="small-muted" style="font-weight:800;margin:20px 0 8px;">REVIEWS DUE</div>${reviewsDue.map(viva => renderViva(viva, true)).join("")}`;
+      container.innerHTML = html;
     }
-
-
-    /* ---------------------------
-       HISTORY
-    ---------------------------- */
 
     function renderHistory() {
-
-      const search =
-        document
-          .getElementById(
-            "searchInput"
-          )
-          .value
-          .toLowerCase()
-          .trim();
-
-
-      let results =
-        [...vivas]
-
-          .sort(
-            (a, b) =>
-              b.date.localeCompare(
-                a.date
-              )
-          );
-
+      const search = document.getElementById("searchInput").value.toLowerCase().trim();
+      let results = [...vivas].sort((a, b) => b.date.localeCompare(a.date));
 
       if (search) {
-
-        results =
-          results.filter(
-            viva => {
-
-              const content =
-                [
-                  viva.topic,
-                  viva.category,
-                  viva.questions,
-                  viva.feedback,
-                  viva.revision,
-                  ...(viva.weaknesses || [])
-                ]
-                .join(" ")
-                .toLowerCase();
-
-
-              return content.includes(
-                search
-              );
-
-            }
-          );
-
+        results = results.filter(viva => {
+          const content = [viva.topic, viva.category, viva.questions, viva.feedback, viva.revision, ...(viva.weaknesses || [])].join(" ").toLowerCase();
+          return content.includes(search);
+        });
       }
 
-
-      document
-        .getElementById(
-          "historyList"
-        )
-        .innerHTML =
-
-          results.length
-
-            ? results
-                .map(
-                  viva =>
-                    renderViva(
-                      viva
-                    )
-                )
-                .join("")
-
-            : `
-                <div class="empty-state">
-                  No matching vivas found.
-                </div>
-              `;
-
+      document.getElementById("historyList").innerHTML = results.length
+        ? results.map(viva => renderViva(viva)).join("")
+        : `<div class="empty-state">No matching vivas found.</div>`;
     }
 
-
-    /* ---------------------------
-       STATS
-    ---------------------------- */
-
     function renderStats() {
-
       renderPerformanceStats();
-
       renderTopicStats();
-
       renderWeaknessStats();
     }
 
-
     function renderPerformanceStats() {
-
-      const ratings =
-        [
-          "Strong",
-          "Okay",
-          "Needs work"
-        ];
-
-
-      if (!vivas.length) {
-
-        document
-          .getElementById(
-            "performanceStats"
-          )
-          .innerHTML =
-
-            `
-              <div class="empty-state">
-                No data yet.
-              </div>
-            `;
-
+      const ratedVivas = vivas.filter(viva => ["Strong", "Okay", "Needs work"].includes(viva.rating));
+      if (!ratedVivas.length) {
+        document.getElementById("performanceStats").innerHTML = `<div class="empty-state">No rated vivas yet.</div>`;
         return;
       }
 
-
-      let html = "";
-
-
-      ratings.forEach(
-        rating => {
-
-          const count =
-            vivas.filter(
-              viva =>
-                viva.rating === rating
-            ).length;
-
-
-          const percent =
-            Math.round(
-              (
-                count /
-                vivas.length
-              ) *
-              100
-            );
-
-
-          html += `
-
-            <div class="topic-row">
-
-              <div>
-                ${rating}
-              </div>
-
-              <div class="bar-bg">
-
-                <div
-                  class="bar-fill"
-                  style="width:${percent}%"
-                ></div>
-
-              </div>
-
-              <div>
-                ${count}
-              </div>
-
-            </div>
-
-          `;
-
-        }
-      );
-
-
-      document
-        .getElementById(
-          "performanceStats"
-        )
-        .innerHTML =
-          html;
+      const ratings = ["Strong", "Okay", "Needs work"];
+      document.getElementById("performanceStats").innerHTML = ratings.map(rating => {
+        const count = ratedVivas.filter(viva => viva.rating === rating).length;
+        const percent = Math.round((count / ratedVivas.length) * 100);
+        return `<div class="topic-row"><div>${rating}</div><div class="bar-bg"><div class="bar-fill" style="width:${percent}%"></div></div><div>${count}</div></div>`;
+      }).join("");
     }
-
 
     function renderTopicStats() {
-
       const counts = {};
-
-
-      vivas.forEach(
-        viva => {
-
-          const category =
-            viva.category ||
-            "Uncategorised";
-
-
-          counts[category] =
-            (
-              counts[category] ||
-              0
-            ) + 1;
-
-        }
-      );
-
-
-      const entries =
-        Object.entries(counts)
-
-          .sort(
-            (a, b) =>
-              b[1] - a[1]
-          );
-
+      vivas.forEach(viva => {
+        const category = viva.category || "Uncategorised";
+        counts[category] = (counts[category] || 0) + 1;
+      });
+      const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
 
       if (!entries.length) {
-
-        document
-          .getElementById(
-            "topicStats"
-          )
-          .innerHTML =
-
-            `
-              <div class="empty-state">
-                No data yet.
-              </div>
-            `;
-
+        document.getElementById("topicStats").innerHTML = `<div class="empty-state">No data yet.</div>`;
         return;
       }
 
-
-      const maximum =
-        Math.max(
-          ...entries.map(
-            entry =>
-              entry[1]
-          )
-        );
-
-
-      document
-        .getElementById(
-          "topicStats"
-        )
-        .innerHTML =
-
-          entries
-
-            .map(
-              ([category, count]) => `
-
-                <div class="topic-row">
-
-                  <div>
-                    ${escapeHTML(category)}
-                  </div>
-
-                  <div class="bar-bg">
-
-                    <div
-                      class="bar-fill"
-                      style="
-                        width:
-                        ${(count / maximum) * 100}%
-                      "
-                    ></div>
-
-                  </div>
-
-                  <div>
-                    ${count}
-                  </div>
-
-                </div>
-
-              `
-            )
-
-            .join("");
+      const maximum = Math.max(...entries.map(entry => entry[1]));
+      document.getElementById("topicStats").innerHTML = entries.map(([category, count]) => `<div class="topic-row"><div>${escapeHTML(category)}</div><div class="bar-bg"><div class="bar-fill" style="width:${(count / maximum) * 100}%"></div></div><div>${count}</div></div>`).join("");
     }
-
 
     function renderWeaknessStats() {
-
       const counts = {};
-
-
-      vivas.forEach(
-        viva => {
-
-          (
-            viva.weaknesses ||
-            []
-          )
-          .forEach(
-            weakness => {
-
-              counts[weakness] =
-                (
-                  counts[weakness] ||
-                  0
-                ) + 1;
-
-            }
-          );
-
-        }
-      );
-
-
-      const entries =
-        Object.entries(counts)
-
-          .sort(
-            (a, b) =>
-              b[1] - a[1]
-          );
-
+      vivas.forEach(viva => (viva.weaknesses || []).forEach(weakness => counts[weakness] = (counts[weakness] || 0) + 1));
+      const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
 
       if (!entries.length) {
-
-        document
-          .getElementById(
-            "weaknessStats"
-          )
-          .innerHTML =
-
-            `
-              <div class="empty-state">
-                No weaknesses recorded yet.
-              </div>
-            `;
-
+        document.getElementById("weaknessStats").innerHTML = `<div class="empty-state">No weaknesses recorded yet.</div>`;
         return;
       }
 
-
-      const maximum =
-        Math.max(
-          ...entries.map(
-            entry =>
-              entry[1]
-          )
-        );
-
-
-      document
-        .getElementById(
-          "weaknessStats"
-        )
-        .innerHTML =
-
-          entries
-
-            .map(
-              ([weakness, count]) => `
-
-                <div class="topic-row">
-
-                  <div>
-                    ${escapeHTML(weakness)}
-                  </div>
-
-                  <div class="bar-bg">
-
-                    <div
-                      class="bar-fill"
-                      style="
-                        width:
-                        ${(count / maximum) * 100}%
-                      "
-                    ></div>
-
-                  </div>
-
-                  <div>
-                    ${count}
-                  </div>
-
-                </div>
-
-              `
-            )
-
-            .join("");
+      const maximum = Math.max(...entries.map(entry => entry[1]));
+      document.getElementById("weaknessStats").innerHTML = entries.map(([weakness, count]) => `<div class="topic-row"><div>${escapeHTML(weakness)}</div><div class="bar-bg"><div class="bar-fill" style="width:${(count / maximum) * 100}%"></div></div><div>${count}</div></div>`).join("");
     }
-
-
-    /* ---------------------------
-       BACKUPS
-    ---------------------------- */
 
     function exportData() {
-
-      const backup = {
-
-        version: 2,
-
-        exported:
-          new Date()
-            .toISOString(),
-
-        settings,
-
-        vivas
-
-      };
-
-
-      const data =
-        JSON.stringify(
-          backup,
-          null,
-          2
-        );
-
-
-      const blob =
-        new Blob(
-          [data],
-          {
-            type:
-              "application/json"
-          }
-        );
-
-
-      const url =
-        URL.createObjectURL(
-          blob
-        );
-
-
-      const link =
-        document
-          .createElement("a");
-
-
-      link.href =
-        url;
-
-
-      link.download =
-        `primary-viva-backup-${todayString()}.json`;
-
-
+      const backup = { version: 3, exported: new Date().toISOString(), settings, vivas };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `primary-viva-backup-${todayString()}.json`;
       link.click();
-
-
-      URL.revokeObjectURL(
-        url
-      );
+      URL.revokeObjectURL(url);
     }
-
 
     function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
 
-      const file =
-        event.target.files[0];
-
-
-      if (!file) {
-        return;
-      }
-
-
-      const reader =
-        new FileReader();
-
-
-      reader.onload =
-        function(loadEvent) {
-
-          try {
-
-            const imported =
-              JSON.parse(
-                loadEvent.target.result
-              );
-
-
-            let importedVivas;
-            let importedSettings;
-
-
-            /*
-              Supports both the newer backup
-              format and the original plain
-              viva array.
-            */
-
-            if (
-              Array.isArray(imported)
-            ) {
-
-              importedVivas =
-                imported;
-
-              importedSettings =
-                settings;
-
-            } else {
-
-              importedVivas =
-                imported.vivas;
-
-              importedSettings =
-                imported.settings ||
-                settings;
-
-            }
-
-
-            if (
-              !Array.isArray(
-                importedVivas
-              )
-            ) {
-
-              throw new Error(
-                "Invalid backup"
-              );
-
-            }
-
-
-            const proceed =
-              confirm(
-                "Import this backup? This will replace the viva data currently stored on this device."
-              );
-
-
-            if (!proceed) {
-
-              event.target.value =
-                "";
-
-              return;
-            }
-
-
-            vivas =
-              importedVivas;
-
-
-            settings =
-              importedSettings;
-
-
-            saveData();
-
-            saveSettings();
-
-            refreshAll();
-
-
-            alert(
-              "Backup imported successfully."
-            );
-
-          } catch (error) {
-
-            alert(
-              "That file doesn't appear to be a valid Viva Tracker backup."
-            );
-
+      reader.onload = function(loadEvent) {
+        try {
+          const imported = JSON.parse(loadEvent.target.result);
+          const importedVivas = Array.isArray(imported) ? imported : imported.vivas;
+          const importedSettings = Array.isArray(imported) ? settings : (imported.settings || settings);
+          if (!Array.isArray(importedVivas)) throw new Error("Invalid backup");
+          if (!confirm("Import this backup? This will replace the viva data currently stored on this device.")) {
+            event.target.value = "";
+            return;
           }
+          vivas = importedVivas;
+          settings = importedSettings;
+          saveData();
+          saveSettings();
+          refreshAll();
+          alert("Backup imported successfully.");
+        } catch (error) {
+          alert("That file doesn't appear to be a valid Viva Tracker backup.");
+        }
+        event.target.value = "";
+      };
 
-
-          event.target.value =
-            "";
-
-        };
-
-
-      reader.readAsText(
-        file
-      );
+      reader.readAsText(file);
     }
 
-
-    /* ---------------------------
-       REFRESH
-    ---------------------------- */
-
     function refreshAll() {
-
       renderDashboard();
-
       renderReviewQueue();
-
       renderCalendar();
-
       renderHistory();
-
       renderStats();
     }
 
-
     resetForm();
-
     refreshAll();
-
   </script>
-
 </body>
 </html>
