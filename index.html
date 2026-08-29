@@ -802,24 +802,188 @@
       .calendar-viva-count { min-width: 20px; height: 20px; padding: 0 5px; }
       .calendar-review-dot { width: 7px; height: 7px; right: 6px; bottom: 6px; }
     }
+
+
+    /* CLOUD LOGIN + SYNC */
+    .auth-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 18px;
+      background: linear-gradient(145deg, #eff6ff 0%, #eef2ff 52%, #faf5ff 100%);
+    }
+
+    .auth-card {
+      width: min(430px, 100%);
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 34px;
+      box-shadow: 0 20px 60px rgba(37, 99, 235, 0.13);
+      text-align: center;
+    }
+
+    .auth-mark {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      margin: 0 auto 18px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      font-size: 1.7rem;
+      font-weight: 900;
+    }
+
+    .auth-card h2 {
+      font-size: 1.55rem;
+      margin: 0 0 7px;
+    }
+
+    .auth-tagline {
+      color: var(--muted);
+      margin: 0 0 25px;
+    }
+
+    .auth-field {
+      text-align: left;
+      margin-bottom: 14px;
+    }
+
+    .auth-button {
+      width: 100%;
+      margin-top: 7px;
+      padding: 12px 16px;
+    }
+
+    .auth-message {
+      min-height: 22px;
+      margin-top: 12px;
+      font-size: 0.87rem;
+      color: var(--weak);
+    }
+
+    .auth-help {
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.45;
+      margin-top: 12px;
+    }
+
+    .cloud-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .cloud-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      margin-right: 3px;
+      line-height: 1.15;
+    }
+
+    .sync-status {
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: var(--good);
+    }
+
+    .sync-status.syncing { color: var(--primary); }
+    .sync-status.error { color: var(--weak); }
+
+    .user-email {
+      font-size: 0.7rem;
+      color: var(--muted);
+      max-width: 190px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .secondary-header {
+      background: rgba(255,255,255,0.16);
+    }
+
+    .migration-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      background: linear-gradient(135deg, #eff6ff, #f5f3ff);
+      border: 1px solid #c7d2fe;
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 18px;
+    }
+
+    .migration-banner[hidden] { display: none; }
+
+    .migration-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 750px) {
+      .cloud-actions { justify-content: center; }
+      .cloud-meta { width: 100%; align-items: center; order: 3; }
+      .migration-banner { align-items: flex-start; flex-direction: column; }
+      .migration-actions { width: 100%; }
+      .migration-actions button { flex: 1; }
+      .auth-card { padding: 26px 20px; }
+    }
+
   </style>
 </head>
 
 <body>
-  <header>
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-mark">V</div>
+      <h2>Primary Viva Tracker</h2>
+      <p class="auth-tagline">“The harder you practise, the luckier you get.”</p>
+      <form id="loginForm">
+        <div class="auth-field">
+          <label for="loginEmail">Email</label>
+          <input id="loginEmail" type="email" autocomplete="email" required />
+        </div>
+        <div class="auth-field">
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" type="password" autocomplete="current-password" required />
+        </div>
+        <button id="loginButton" type="submit" class="button-primary auth-button">Sign in</button>
+        <div id="loginMessage" class="auth-message" aria-live="polite"></div>
+      </form>
+      <div class="auth-help">Sign in with the Supabase account you created. Your session will stay signed in on this browser.</div>
+    </div>
+  </section>
+
+  <header id="appHeader" style="display:none;">
     <div class="header-inner">
       <div class="header-copy">
         <h1>Primary Viva Tracker</h1>
         <p>“The harder you practise, the luckier you get.”</p>
       </div>
 
-      <div class="header-action">
+      <div class="header-action cloud-actions">
+        <div class="cloud-meta">
+          <span id="syncStatus" class="sync-status">Cloud ready</span>
+          <span id="userEmail" class="user-email"></span>
+        </div>
         <button class="button-header" onclick="openNewViva()">+ Full Log</button>
+        <button class="button-header secondary-header" onclick="syncNow()">↻ Sync</button>
+        <button class="button-header secondary-header" onclick="signOut()">Sign out</button>
       </div>
     </div>
   </header>
 
-  <main>
+  <main id="appMain" style="display:none;">
     <nav class="nav">
       <button class="active" data-page="dashboard" onclick="showPage('dashboard', this)">Dashboard</button>
       <button data-page="log" onclick="showPage('log', this)">Full Log</button>
@@ -830,12 +994,23 @@
     </nav>
 
     <section id="dashboard" class="page active">
+      <div id="migrationBanner" class="migration-banner" hidden>
+        <div>
+          <strong>Browser-only viva data found</strong>
+          <div class="small-muted">Move the vivas saved in this browser into your cloud account so they appear on every device.</div>
+        </div>
+        <div class="migration-actions">
+          <button class="button-primary" onclick="migrateLocalData()">Move to cloud</button>
+          <button class="button-secondary" onclick="dismissMigration()">Dismiss</button>
+        </div>
+      </div>
+
       <div class="hero-grid">
         <div class="card hero-card countdown-card">
           <div class="hero-label">⏳ Until the viva</div>
           <div class="countdown-number" id="countdownDays">—</div>
           <div class="countdown-sub" id="countdownText">days to go</div>
-          <div class="countdown-date">18 October 2026</div>
+          <div class="countdown-date" id="countdownDateLabel">18 October 2026</div>
         </div>
 
         <div class="card hero-card">
@@ -1114,17 +1289,196 @@
     </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const VIVA_DATE = "2026-10-18";
+    const SUPABASE_URL = "https://jaorycvzhfxdywujvdxq.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_XUXixeJBNeIzHGUSWHeA_w_9coZzxVY";
+    const DEFAULT_VIVA_DATE = "2026-10-18";
 
-    let vivas = JSON.parse(localStorage.getItem("primaryVivas")) || [];
-    let settings = JSON.parse(localStorage.getItem("primaryVivaSettings")) || { dailyGoal: 2 };
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      }
+    );
+
+    let currentUser = null;
+    let vivas = [];
+    let settings = { dailyGoal: 2, vivaDate: DEFAULT_VIVA_DATE };
     let calendarDate = new Date();
     calendarDate.setDate(1);
     let selectedCalendarDate = todayString();
 
-    function saveData() { localStorage.setItem("primaryVivas", JSON.stringify(vivas)); }
-    function saveSettings() { localStorage.setItem("primaryVivaSettings", JSON.stringify(settings)); }
+    function setSyncStatus(text, state = "ok") {
+      const el = document.getElementById("syncStatus");
+      if (!el) return;
+      el.textContent = text;
+      el.classList.remove("syncing", "error");
+      if (state === "syncing") el.classList.add("syncing");
+      if (state === "error") el.classList.add("error");
+    }
+
+    function showAuth(message = "") {
+      currentUser = null;
+      vivas = [];
+      document.getElementById("authScreen").style.display = "flex";
+      document.getElementById("appHeader").style.display = "none";
+      document.getElementById("appMain").style.display = "none";
+      document.getElementById("loginMessage").textContent = message;
+    }
+
+    async function showApp(user) {
+      currentUser = user;
+      document.getElementById("authScreen").style.display = "none";
+      document.getElementById("appHeader").style.display = "block";
+      document.getElementById("appMain").style.display = "block";
+      document.getElementById("userEmail").textContent = user.email || "Signed in";
+      resetForm();
+      await loadCloudData();
+      updateMigrationBanner();
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      const button = document.getElementById("loginButton");
+      const message = document.getElementById("loginMessage");
+
+      button.disabled = true;
+      button.textContent = "Signing in…";
+      message.textContent = "";
+
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+      button.disabled = false;
+      button.textContent = "Sign in";
+
+      if (error) {
+        message.textContent = error.message;
+        return;
+      }
+
+      if (data.user) await showApp(data.user);
+    });
+
+    async function signOut() {
+      setSyncStatus("Signing out…", "syncing");
+      await supabaseClient.auth.signOut();
+      showAuth();
+    }
+
+    async function syncNow() {
+      if (!currentUser) return;
+      await loadCloudData();
+    }
+
+    function dbRowToViva(row) {
+      return {
+        id: row.id,
+        date: row.date,
+        type: row.type,
+        category: row.category || "",
+        topic: row.topic || "",
+        rating: row.rating || "Unrated",
+        questions: row.questions || "",
+        feedback: row.feedback || "",
+        weaknesses: Array.isArray(row.weaknesses) ? row.weaknesses : [],
+        revision: row.revision || "",
+        reviewDate: row.review_date || ""
+      };
+    }
+
+    function vivaToDb(viva) {
+      const validRating = ["Needs work", "Okay", "Strong"].includes(viva.rating) ? viva.rating : null;
+      return {
+        user_id: currentUser.id,
+        date: viva.date,
+        type: viva.type,
+        category: viva.category || null,
+        topic: viva.topic,
+        rating: validRating,
+        questions: viva.questions || null,
+        feedback: viva.feedback || null,
+        weaknesses: Array.isArray(viva.weaknesses) ? viva.weaknesses : [],
+        revision: viva.revision || null,
+        review_date: viva.reviewDate || null
+      };
+    }
+
+    async function loadCloudData() {
+      if (!currentUser) return;
+      setSyncStatus("Syncing…", "syncing");
+
+      const vivasPromise = supabaseClient
+        .from("vivas")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .order("date", { ascending: false })
+        .order("created_at", { ascending: false });
+
+      const settingsPromise = supabaseClient
+        .from("settings")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .maybeSingle();
+
+      const [vivaResult, settingsResult] = await Promise.all([vivasPromise, settingsPromise]);
+
+      if (vivaResult.error) {
+        console.error(vivaResult.error);
+        setSyncStatus("Sync error", "error");
+        alert("I couldn't load your vivas from Supabase: " + vivaResult.error.message);
+        return;
+      }
+
+      vivas = (vivaResult.data || []).map(dbRowToViva);
+
+      if (settingsResult.error) {
+        console.error(settingsResult.error);
+        setSyncStatus("Sync error", "error");
+        alert("I couldn't load your settings from Supabase: " + settingsResult.error.message);
+        return;
+      }
+
+      if (settingsResult.data) {
+        settings = {
+          dailyGoal: settingsResult.data.daily_goal || 2,
+          vivaDate: settingsResult.data.viva_date || DEFAULT_VIVA_DATE
+        };
+      } else {
+        const { data, error } = await supabaseClient
+          .from("settings")
+          .insert({
+            user_id: currentUser.id,
+            daily_goal: 2,
+            viva_date: DEFAULT_VIVA_DATE
+          })
+          .select()
+          .single();
+
+        if (error) {
+          console.error(error);
+          setSyncStatus("Sync error", "error");
+          alert("I couldn't create your cloud settings: " + error.message);
+          return;
+        }
+
+        settings = {
+          dailyGoal: data.daily_goal,
+          vivaDate: data.viva_date
+        };
+      }
+
+      refreshAll();
+      updateMigrationBanner();
+      setSyncStatus("Synced");
+    }
 
     function dateToYMD(date) {
       const year = date.getFullYear();
@@ -1149,6 +1503,11 @@
     function formatDate(dateString) {
       if (!dateString) return "";
       return parseLocalDate(dateString).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" });
+    }
+
+    function formatLongDate(dateString) {
+      if (!dateString) return "";
+      return parseLocalDate(dateString).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
     }
 
     function weekdayShort(dateString) {
@@ -1188,15 +1547,19 @@
 
     function clearReviewDate() { document.getElementById("reviewDate").value = ""; }
 
-    document.getElementById("quickLogForm").addEventListener("submit", function(event) {
+    document.getElementById("quickLogForm").addEventListener("submit", async function(event) {
       event.preventDefault();
+      if (!currentUser) return;
 
       const category = document.getElementById("quickCategory").value;
       const topic = document.getElementById("quickTopic").value.trim();
       if (!category || !topic) return;
 
-      vivas.push({
-        id: Date.now().toString(),
+      const button = event.submitter || event.target.querySelector('button[type="submit"]');
+      if (button) { button.disabled = true; button.textContent = "Saving…"; }
+      setSyncStatus("Saving…", "syncing");
+
+      const viva = {
         date: todayString(),
         type: document.getElementById("quickType").value,
         category,
@@ -1207,21 +1570,40 @@
         weaknesses: [],
         revision: "",
         reviewDate: ""
-      });
+      };
 
-      saveData();
+      const { data, error } = await supabaseClient
+        .from("vivas")
+        .insert(vivaToDb(viva))
+        .select()
+        .single();
+
+      if (button) { button.disabled = false; button.textContent = "+ Save viva"; }
+
+      if (error) {
+        console.error(error);
+        setSyncStatus("Save failed", "error");
+        alert("That viva wasn't saved: " + error.message);
+        return;
+      }
+
+      vivas.unshift(dbRowToViva(data));
       document.getElementById("quickTopic").value = "";
       refreshAll();
+      setSyncStatus("Synced");
       document.getElementById("quickTopic").focus();
     });
 
-    document.getElementById("vivaForm").addEventListener("submit", function(event) {
+    document.getElementById("vivaForm").addEventListener("submit", async function(event) {
       event.preventDefault();
+      if (!currentUser) return;
+
       const ratingElement = document.querySelector('input[name="rating"]:checked');
       const weaknesses = Array.from(document.querySelectorAll(".weakness-tag input:checked")).map(item => item.value);
+      const editId = document.getElementById("editId").value;
 
       const viva = {
-        id: document.getElementById("editId").value || Date.now().toString(),
+        id: editId || undefined,
         date: document.getElementById("date").value,
         type: document.getElementById("type").value,
         category: document.getElementById("category").value,
@@ -1234,24 +1616,69 @@
         reviewDate: document.getElementById("reviewDate").value
       };
 
-      const existingIndex = vivas.findIndex(item => item.id === viva.id);
-      if (existingIndex >= 0) vivas[existingIndex] = viva;
-      else vivas.push(viva);
+      setSyncStatus("Saving…", "syncing");
+      let result;
 
-      saveData();
+      if (editId) {
+        result = await supabaseClient
+          .from("vivas")
+          .update(vivaToDb(viva))
+          .eq("id", editId)
+          .eq("user_id", currentUser.id)
+          .select()
+          .single();
+      } else {
+        result = await supabaseClient
+          .from("vivas")
+          .insert(vivaToDb(viva))
+          .select()
+          .single();
+      }
+
+      if (result.error) {
+        console.error(result.error);
+        setSyncStatus("Save failed", "error");
+        alert("That viva wasn't saved: " + result.error.message);
+        return;
+      }
+
+      const saved = dbRowToViva(result.data);
+      const existingIndex = vivas.findIndex(item => item.id === saved.id);
+      if (existingIndex >= 0) vivas[existingIndex] = saved;
+      else vivas.unshift(saved);
+
       resetForm();
       refreshAll();
+      setSyncStatus("Synced");
       showPageByName("dashboard");
     });
 
-    function saveDailyGoal() {
+    async function saveDailyGoal() {
+      if (!currentUser) return;
       let goal = Number(document.getElementById("dailyGoalInput").value);
       if (!Number.isFinite(goal)) goal = 1;
       goal = Math.max(1, Math.min(20, Math.round(goal)));
+
+      setSyncStatus("Saving…", "syncing");
+      const { error } = await supabaseClient
+        .from("settings")
+        .upsert({
+          user_id: currentUser.id,
+          daily_goal: goal,
+          viva_date: settings.vivaDate || DEFAULT_VIVA_DATE
+        }, { onConflict: "user_id" });
+
+      if (error) {
+        console.error(error);
+        setSyncStatus("Save failed", "error");
+        alert("Your daily goal wasn't saved: " + error.message);
+        return;
+      }
+
       settings.dailyGoal = goal;
-      saveSettings();
       document.getElementById("dailyGoalInput").value = goal;
       refreshAll();
+      setSyncStatus("Synced");
     }
 
     function getCountForDate(dateString) { return vivas.filter(viva => viva.date === dateString).length; }
@@ -1273,11 +1700,13 @@
     }
 
     function renderCountdown() {
+      const vivaDate = settings.vivaDate || DEFAULT_VIVA_DATE;
       const today = parseLocalDate(todayString());
-      const exam = parseLocalDate(VIVA_DATE);
+      const exam = parseLocalDate(vivaDate);
       const msPerDay = 24 * 60 * 60 * 1000;
       const days = Math.round((exam - today) / msPerDay);
 
+      document.getElementById("countdownDateLabel").textContent = formatLongDate(vivaDate);
       const numberEl = document.getElementById("countdownDays");
       const textEl = document.getElementById("countdownText");
 
@@ -1377,7 +1806,7 @@
           </div>
 
           <div class="row-actions">
-            <button class="button-secondary" onclick="editViva('${viva.id}')">Edit</button>
+            <button class="button-secondary" onclick="editViva('${viva.id}')">${rating === "Unrated" ? "Complete log" : "Edit"}</button>
             <button class="button-danger" onclick="deleteViva('${viva.id}')">Delete</button>
           </div>
         </div>`;
@@ -1388,7 +1817,7 @@
       if (!viva) return;
 
       showPageByName("log");
-      document.getElementById("formTitle").textContent = "Edit viva";
+      document.getElementById("formTitle").textContent = viva.rating === "Unrated" ? "Complete viva log" : "Edit viva";
       document.getElementById("editId").value = viva.id;
       document.getElementById("date").value = viva.date;
       document.getElementById("type").value = viva.type;
@@ -1399,11 +1828,8 @@
       document.getElementById("revision").value = viva.revision || "";
       document.getElementById("reviewDate").value = viva.reviewDate || "";
 
-      document.querySelectorAll('input[name="rating"]').forEach(input => input.checked = false);
-      if (viva.rating && viva.rating !== "Unrated") {
-        const rating = document.querySelector(`input[name="rating"][value="${viva.rating}"]`);
-        if (rating) rating.checked = true;
-      }
+      const rating = document.querySelector(`input[name="rating"][value="${viva.rating}"]`);
+      if (rating) rating.checked = true;
 
       document.querySelectorAll(".weakness-tag input").forEach(input => {
         input.checked = (viva.weaknesses || []).includes(input.value);
@@ -1412,11 +1838,27 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function deleteViva(id) {
+    async function deleteViva(id) {
       if (!confirm("Delete this viva?")) return;
+      if (!currentUser) return;
+
+      setSyncStatus("Deleting…", "syncing");
+      const { error } = await supabaseClient
+        .from("vivas")
+        .delete()
+        .eq("id", id)
+        .eq("user_id", currentUser.id);
+
+      if (error) {
+        console.error(error);
+        setSyncStatus("Delete failed", "error");
+        alert("That viva wasn't deleted: " + error.message);
+        return;
+      }
+
       vivas = vivas.filter(item => item.id !== id);
-      saveData();
       refreshAll();
+      setSyncStatus("Synced");
     }
 
     function renderDashboard() {
@@ -1596,7 +2038,7 @@
     }
 
     function exportData() {
-      const backup = { version: 3, exported: new Date().toISOString(), settings, vivas };
+      const backup = { version: 4, exported: new Date().toISOString(), settings, vivas };
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -1606,34 +2048,139 @@
       URL.revokeObjectURL(url);
     }
 
-    function importData(event) {
+    async function importData(event) {
       const file = event.target.files[0];
-      if (!file) return;
+      if (!file || !currentUser) return;
       const reader = new FileReader();
 
-      reader.onload = function(loadEvent) {
+      reader.onload = async function(loadEvent) {
         try {
           const imported = JSON.parse(loadEvent.target.result);
           const importedVivas = Array.isArray(imported) ? imported : imported.vivas;
           const importedSettings = Array.isArray(imported) ? settings : (imported.settings || settings);
           if (!Array.isArray(importedVivas)) throw new Error("Invalid backup");
-          if (!confirm("Import this backup? This will replace the viva data currently stored on this device.")) {
+
+          if (!confirm("Import this backup? This will replace the vivas currently saved in your cloud account.")) {
             event.target.value = "";
             return;
           }
-          vivas = importedVivas;
-          settings = importedSettings;
-          saveData();
-          saveSettings();
-          refreshAll();
-          alert("Backup imported successfully.");
+
+          setSyncStatus("Importing…", "syncing");
+          const deleteResult = await supabaseClient
+            .from("vivas")
+            .delete()
+            .eq("user_id", currentUser.id);
+
+          if (deleteResult.error) throw deleteResult.error;
+
+          if (importedVivas.length) {
+            const rows = importedVivas.map(v => vivaToDb({
+              date: v.date,
+              type: v.type || "Received",
+              category: v.category || "",
+              topic: v.topic || "Untitled viva",
+              rating: v.rating || "Unrated",
+              questions: v.questions || "",
+              feedback: v.feedback || "",
+              weaknesses: Array.isArray(v.weaknesses) ? v.weaknesses : [],
+              revision: v.revision || "",
+              reviewDate: v.reviewDate || v.review_date || ""
+            }));
+
+            const insertResult = await supabaseClient.from("vivas").insert(rows);
+            if (insertResult.error) throw insertResult.error;
+          }
+
+          const goal = Number(importedSettings.dailyGoal || importedSettings.daily_goal || 2);
+          const vivaDate = importedSettings.vivaDate || importedSettings.viva_date || DEFAULT_VIVA_DATE;
+          const settingsResult = await supabaseClient
+            .from("settings")
+            .upsert({ user_id: currentUser.id, daily_goal: goal, viva_date: vivaDate }, { onConflict: "user_id" });
+          if (settingsResult.error) throw settingsResult.error;
+
+          await loadCloudData();
+          alert("Backup imported to your cloud account.");
         } catch (error) {
-          alert("That file doesn't appear to be a valid Viva Tracker backup.");
+          console.error(error);
+          setSyncStatus("Import failed", "error");
+          alert("That backup couldn't be imported: " + (error.message || error));
         }
         event.target.value = "";
       };
 
       reader.readAsText(file);
+    }
+
+    function getLegacyLocalData() {
+      try {
+        const oldVivas = JSON.parse(localStorage.getItem("primaryVivas") || "[]");
+        const oldSettings = JSON.parse(localStorage.getItem("primaryVivaSettings") || "null");
+        return {
+          vivas: Array.isArray(oldVivas) ? oldVivas : [],
+          settings: oldSettings && typeof oldSettings === "object" ? oldSettings : null
+        };
+      } catch (_) {
+        return { vivas: [], settings: null };
+      }
+    }
+
+    function updateMigrationBanner() {
+      const banner = document.getElementById("migrationBanner");
+      if (!banner) return;
+      const legacy = getLegacyLocalData();
+      const dismissed = localStorage.getItem("primaryVivaMigrationDismissed") === "1";
+      banner.hidden = dismissed || legacy.vivas.length === 0 || vivas.length > 0;
+    }
+
+    function dismissMigration() {
+      localStorage.setItem("primaryVivaMigrationDismissed", "1");
+      updateMigrationBanner();
+    }
+
+    async function migrateLocalData() {
+      if (!currentUser) return;
+      const legacy = getLegacyLocalData();
+      if (!legacy.vivas.length) return;
+
+      if (!confirm(`Move ${legacy.vivas.length} browser-saved viva${legacy.vivas.length === 1 ? "" : "s"} into your cloud account?`)) return;
+
+      try {
+        setSyncStatus("Migrating…", "syncing");
+        const rows = legacy.vivas.map(v => vivaToDb({
+          date: v.date || todayString(),
+          type: v.type || "Received",
+          category: v.category || "",
+          topic: v.topic || "Untitled viva",
+          rating: v.rating || "Unrated",
+          questions: v.questions || "",
+          feedback: v.feedback || "",
+          weaknesses: Array.isArray(v.weaknesses) ? v.weaknesses : [],
+          revision: v.revision || "",
+          reviewDate: v.reviewDate || v.review_date || ""
+        }));
+
+        const result = await supabaseClient.from("vivas").insert(rows);
+        if (result.error) throw result.error;
+
+        if (legacy.settings) {
+          const goal = Number(legacy.settings.dailyGoal || legacy.settings.daily_goal || 2);
+          const vivaDate = legacy.settings.vivaDate || legacy.settings.viva_date || DEFAULT_VIVA_DATE;
+          const settingsResult = await supabaseClient
+            .from("settings")
+            .upsert({ user_id: currentUser.id, daily_goal: goal, viva_date: vivaDate }, { onConflict: "user_id" });
+          if (settingsResult.error) throw settingsResult.error;
+        }
+
+        localStorage.removeItem("primaryVivas");
+        localStorage.removeItem("primaryVivaSettings");
+        localStorage.setItem("primaryVivaMigrationDismissed", "1");
+        await loadCloudData();
+        alert("Your browser-saved vivas are now in Supabase and will sync across devices.");
+      } catch (error) {
+        console.error(error);
+        setSyncStatus("Migration failed", "error");
+        alert("The browser data wasn't moved: " + (error.message || error));
+      }
     }
 
     function refreshAll() {
@@ -1644,8 +2191,28 @@
       renderStats();
     }
 
-    resetForm();
-    refreshAll();
+    async function init() {
+      const { data, error } = await supabaseClient.auth.getSession();
+      if (error) {
+        console.error(error);
+        showAuth("Couldn't check your login session. Please sign in again.");
+        return;
+      }
+
+      if (data.session && data.session.user) {
+        await showApp(data.session.user);
+      } else {
+        showAuth();
+      }
+    }
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT" || !session) {
+        showAuth();
+      }
+    });
+
+    init();
   </script>
 </body>
 </html>
